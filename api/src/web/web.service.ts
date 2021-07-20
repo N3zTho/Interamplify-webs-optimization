@@ -26,14 +26,15 @@ export class WebService {
             while (flag) {
                 const webs: Web[] = await this.webRepository.findWithAttributes(attributes, page, limit);
                 if (webs.length > 0) {
-
                     const matchedWeb: Array<string> = domains.filter(d => webs.some(w =>
-                        d['Domains'] === w['dominio']
+                           d['Domains'] === w['dominio']
                     ));
 
-                    matched = [...matchedWeb];
+                    if(matchedWeb.length > 0) {
+                        matched.push(...matchedWeb);
+                    }
 
-                    domains = domains.filter(d => !matched.some(m => d['Domains'] === m));
+                    domains = domains.filter(d => !matched.some(m => d['Domains'] === m['Domains']));
 
                 } else {
                     flag = false;
@@ -41,8 +42,8 @@ export class WebService {
                 page++;
             }
 
-            let matchedDomains = [["Domains"]];
-            let unmatchedDomains = [["Domains"]];
+            const matchedDomains = [["Domains"]];
+            const unmatchedDomains = [["Domains"]];
             matched.map(m => {
                 matchedDomains.push([m['Domains']]);
             });
@@ -59,9 +60,10 @@ export class WebService {
 
             const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}.xlsx`;
             const fileName: string = path.resolve(__dirname, '../../', './public', uniqueSuffix);
-            XLSX.writeFile(wb, fileName)
+            XLSX.writeFile(wb, fileName);
 
             return fileName;
+
         } catch (e) {
             console.log(e);
         }

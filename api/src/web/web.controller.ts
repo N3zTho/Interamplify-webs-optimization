@@ -7,7 +7,7 @@ import { editFileName } from './../utils/file-upload';
 import { WebService } from './web.service';
 import { Web } from './web.entity';
 
-@Controller('web')
+@Controller('webs')
 export class WebController {
   constructor(
     private webService: WebService,
@@ -26,7 +26,7 @@ export class WebController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './public/files',
+        destination: './public',
         filename: editFileName,
       }),
     }),
@@ -35,11 +35,13 @@ export class WebController {
     try {
       const {
         userId,
+        personId,
       } = request.body;
 
       await this.domainDuplicatesQueue.add({
         fileName: file.filename,
         userId: userId,
+        personId: personId
       });
 
       return 'success';

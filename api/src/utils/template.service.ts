@@ -7,12 +7,10 @@ import * as hbs from 'hbs';
 export class TemplateService {
 
     getTemplate(templateName:string, params:Object = {}) {
-        console.log(__dirname);
         let page = null;
 
         try {
             const templatePath = path.resolve(__dirname, '../../', './views/emails', `${templateName}.hbs`);
-            console.log(templatePath);
 
             const template: string = fs.readFileSync(
                 templatePath,

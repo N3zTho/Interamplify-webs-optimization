@@ -1,9 +1,10 @@
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { MulterModule } from '@nestjs/platform-express';
 import { DatabaseModule } from './config/database/database.module';
 import { WebModule } from './web/web.module';
-import { MulterModule } from '@nestjs/platform-express';
+import { UserModule } from './user/user.module';
 import { UtilsModule } from './utils/utils.module';
 
 @Module({
@@ -20,6 +21,7 @@ import { UtilsModule } from './utils/utils.module';
     }),
     DatabaseModule,
     UtilsModule,
+    UserModule,
     WebModule,
   ],
 })
