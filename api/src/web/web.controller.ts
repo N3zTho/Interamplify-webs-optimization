@@ -36,7 +36,6 @@ export class WebController {
       const {
         userId,
       } = request.body;
-      console.log(userId);
 
       await this.domainDuplicatesQueue.add({
         fileName: file.filename,

@@ -32,6 +32,7 @@
     "bull": "^3.23.0",
     "csv-parser": "^3.0.0",
     "dotenv": "^8.6.0",
+    "hbs": "^4.1.2",
     "mime-types": "^2.1.31",
     "mysql2": "^2.2.5",
     "node-mailjet": "^3.3.4",

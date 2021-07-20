@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import * as fs from 'fs';
-import * as path from 'path';
 import * as mimeType from 'mime-types';
 
 const getS3 = () => {
@@ -23,8 +22,6 @@ export class CloudStorageService {
             try {
                 const s3 = getS3();
 
-                // const filePath: string = path.resolve(__dirname, '../../', './public', fileName);
-
                 const fileData: any = fs.readFileSync(filePath);
 
                 const params = {
@@ -39,7 +36,6 @@ export class CloudStorageService {
                     if (s3Err) {
                         reject("error uploading file");
                     }
-                    console.log(data);
                     resolve(data['Location']);
                 });
 
