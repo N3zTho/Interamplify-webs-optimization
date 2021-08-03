@@ -1,0 +1,7 @@
+import { TemplateService } from "./template.service";
+export declare class EmailService {
+    private readonly templateService;
+    constructor(templateService: TemplateService);
+    sendEmail(mailOptions: any): Promise<boolean>;
+    private getMailerClient;
+}
