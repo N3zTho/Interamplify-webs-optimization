@@ -40,19 +40,21 @@ export class DuplicatesConsumer {
         const user = await this.userService.get(job.data.userId);
         const person = await this.personService.get(job.data.personId);
 
-        const mailOptions = {
-            template: "duplicates",
-            file_url: cloudStorageUrl,
-            from: process.env.MJ_EMAIL_SENDER,
-            name:'Interamplify',
-            to_name: `${person.nombre} ${person.email}`,
-            to_email: user.email,
-            subject: 'Dominios duplicados',
-            message:'Este mensaje es para notificarle que el fichero de duplicados ya está disponible.',
-            alternative_message: `Este mensaje es para notificarle que el fichero de duplicados ya está disponible <a href="${cloudStorageUrl}">Descargar</a>`
-        };
+        if(user && person) {
+            const mailOptions = {
+                template: "duplicates",
+                file_url: cloudStorageUrl,
+                from: process.env.MJ_EMAIL_SENDER,
+                name: 'Interamplify',
+                to_name: `${person.nombre} ${person.apellidos}`,
+                to_email: user.email,
+                subject: 'Dominios duplicados',
+                message: 'Este mensaje es para notificarle que el fichero de duplicados ya está disponible.',
+                alternative_message: `Este mensaje es para notificarle que el fichero de duplicados ya está disponible <a href="${cloudStorageUrl}">Descargar</a>`
+            };
 
-        await this.emailService.sendEmail(mailOptions);
+            await this.emailService.sendEmail(mailOptions);
+        }
 
         this.logger.debug('Duplicates job completed');
     }

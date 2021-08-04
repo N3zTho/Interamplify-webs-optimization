@@ -8,13 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var EmailService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailService = void 0;
 const common_1 = require("@nestjs/common");
 const template_service_1 = require("./template.service");
-let EmailService = class EmailService {
+let EmailService = EmailService_1 = class EmailService {
     constructor(templateService) {
         this.templateService = templateService;
+        this.logger = new common_1.Logger(EmailService_1.name);
     }
     async sendEmail(mailOptions) {
         let data = {
@@ -34,6 +36,7 @@ let EmailService = class EmailService {
             if (mailOptions.file_url) {
                 data.file_url = mailOptions.file_url;
             }
+            this.logger.log(`Sending email to: ${mailOptions.to_email}`);
             const htmlPart = await this.templateService.getTemplate(template, data);
             const mailerClient = await this.getMailerClient();
             let textPart = mailOptions.alternative_message;
@@ -65,7 +68,7 @@ let EmailService = class EmailService {
         return mailerClient;
     }
 };
-EmailService = __decorate([
+EmailService = EmailService_1 = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [template_service_1.TemplateService])
 ], EmailService);

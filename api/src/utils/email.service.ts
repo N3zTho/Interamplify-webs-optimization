@@ -7,6 +7,7 @@ export class EmailService {
     constructor(
         private readonly templateService: TemplateService,
     ) {}
+    private readonly logger = new Logger(EmailService.name);
 
     async sendEmail(mailOptions: any): Promise<boolean> {
         let data = {
@@ -27,6 +28,8 @@ export class EmailService {
             if (mailOptions.file_url) {
                 data.file_url = mailOptions.file_url;
             }
+
+            this.logger.log(`Sending email to: ${mailOptions.to_email}`);
 
             const htmlPart = await this.templateService.getTemplate(template, data);
 
