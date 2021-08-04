@@ -17,6 +17,8 @@ import { UtilsModule } from './utils/utils.module';
       redis: {
         host: process.env.REDIS_URL,
         port: parseInt(process.env.REDIS_PORT, 10) || 6379,
+        username: process.env.REDIS_USER,
+        password: process.env.REDIS_PASSWORD,
       },
     }),
     DatabaseModule,
