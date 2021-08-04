@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var WebController_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebController = void 0;
 const bull_1 = require("@nestjs/bull");
@@ -19,10 +20,11 @@ const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
 const file_upload_1 = require("./../utils/file-upload");
 const web_service_1 = require("./web.service");
-let WebController = class WebController {
+let WebController = WebController_1 = class WebController {
     constructor(webService, domainDuplicatesQueue) {
         this.webService = webService;
         this.domainDuplicatesQueue = domainDuplicatesQueue;
+        this.logger = new common_1.Logger(WebController_1.name);
     }
     async findAll() {
         const webs = await this.webService.findAll();
@@ -31,6 +33,7 @@ let WebController = class WebController {
     async duplicates(file, request) {
         try {
             const { userId, personId, } = request.body;
+            this.logger.log('Adding new task for getting duplicates');
             await this.domainDuplicatesQueue.add({
                 fileName: file.filename,
                 userId: userId,
@@ -39,6 +42,7 @@ let WebController = class WebController {
             return 'success';
         }
         catch (e) {
+            this.logger.log(e);
             return 'error';
         }
     }
@@ -63,7 +67,7 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], WebController.prototype, "duplicates", null);
-WebController = __decorate([
+WebController = WebController_1 = __decorate([
     common_1.Controller('webs'),
     __param(1, bull_1.InjectQueue('domainDuplicates')),
     __metadata("design:paramtypes", [web_service_1.WebService, Object])

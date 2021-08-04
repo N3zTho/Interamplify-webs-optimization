@@ -6,6 +6,7 @@ export declare class WebController {
     private webService;
     private readonly domainDuplicatesQueue;
     constructor(webService: WebService, domainDuplicatesQueue: Queue);
+    private readonly logger;
     findAll(): Promise<Web[]>;
     duplicates(file: Express.Multer.File, request: any): Promise<string>;
 }

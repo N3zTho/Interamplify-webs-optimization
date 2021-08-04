@@ -30,6 +30,9 @@ AppModule = __decorate([
                     port: parseInt(process.env.REDIS_PORT, 10) || 6379,
                     username: process.env.REDIS_USER,
                     password: process.env.REDIS_PASSWORD,
+                    tls: {
+                        servername: process.env.REDIS_URL
+                    }
                 },
             }),
             database_module_1.DatabaseModule,

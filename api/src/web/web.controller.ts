@@ -1,6 +1,6 @@
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
-import { Controller, Get, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {Controller, Get, Logger, Post, Req, UploadedFile, UseInterceptors} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { editFileName } from './../utils/file-upload';
@@ -14,6 +14,8 @@ export class WebController {
     @InjectQueue('domainDuplicates')
     private readonly domainDuplicatesQueue: Queue,
   ) {}
+
+  private readonly logger = new Logger(WebController.name);
 
   @Get()
   async findAll(): Promise<Web[]> {
@@ -38,6 +40,8 @@ export class WebController {
         personId,
       } = request.body;
 
+      this.logger.log('Adding new task for getting duplicates');
+
       await this.domainDuplicatesQueue.add({
         fileName: file.filename,
         userId: userId,
@@ -46,6 +50,7 @@ export class WebController {
 
       return 'success';
     } catch (e) {
+      this.logger.log(e);
       return 'error';
     }
   }
