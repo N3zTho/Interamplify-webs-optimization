@@ -36,12 +36,14 @@ export class CloudStorageService {
                     if (s3Err) {
                         reject("error uploading file");
                     }
+
+                    if (removeFile === true) {
+                        fs.unlinkSync(filePath);
+                    }
+
                     resolve(data['Location']);
                 });
 
-                if (removeFile === true) {
-                    fs.unlinkSync(filePath);
-                }
 
             } catch (e) {
                 console.log(e);

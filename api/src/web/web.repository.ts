@@ -21,12 +21,14 @@ export class WebRepository {
     return web;
   }
 
-  async findWithAttributes(attributes: Array<string>, page = 1, limit = 10,): Promise<Web[]> {
+  async findWithAttributes(attributes: Array<string>, page = 1, limit = 10 ,
+                           order: any =  [['id', 'ASC']]): Promise<Web[]> {
+
     const webs = await Web.findAll({
       offset: page * limit - limit,
       limit: limit,
       attributes: attributes,
-      order: [['id', 'ASC']],
+      order: order,
     });
 
     return webs;

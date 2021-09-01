@@ -17,17 +17,22 @@ export class WebService {
     async duplicates(domains: Array<string> ): Promise<string> {
         try {
             const attributes: Array<string> = ['id', 'dominio'];
+            const order: Array<string>[] = [['dominio', 'ASC']];
             let matched: Array<string> = [];
 
             let page = 1;
-            const limit = 250;
+            const limit = 500;
 
             let flag = true;
+
+            domains.sort();
+
             while (flag) {
-                const webs: Web[] = await this.webRepository.findWithAttributes(attributes, page, limit);
+                const webs: Web[] = await this.webRepository.findWithAttributes(attributes, page, limit, order);
                 if (webs.length > 0) {
+
                     const matchedWeb: Array<string> = domains.filter(d => webs.some(w =>
-                           d['Domains'] === w['dominio']
+                        d['Domains'].toLowerCase() === w['dominio'].toLowerCase()
                     ));
 
                     if(matchedWeb.length > 0) {

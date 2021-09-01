@@ -25,14 +25,16 @@ let WebService = class WebService {
     async duplicates(domains) {
         try {
             const attributes = ['id', 'dominio'];
+            const order = [['dominio', 'ASC']];
             let matched = [];
             let page = 1;
-            const limit = 250;
+            const limit = 500;
             let flag = true;
+            domains.sort();
             while (flag) {
-                const webs = await this.webRepository.findWithAttributes(attributes, page, limit);
+                const webs = await this.webRepository.findWithAttributes(attributes, page, limit, order);
                 if (webs.length > 0) {
-                    const matchedWeb = domains.filter(d => webs.some(w => d['Domains'] === w['dominio']));
+                    const matchedWeb = domains.filter(d => webs.some(w => d['Domains'].toLowerCase() === w['dominio'].toLowerCase()));
                     if (matchedWeb.length > 0) {
                         matched.push(...matchedWeb);
                     }
