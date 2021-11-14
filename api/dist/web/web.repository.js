@@ -21,13 +21,17 @@ let WebRepository = class WebRepository {
         const web = await web_entity_1.Web.findByPk(id);
         return web;
     }
-    async findWithAttributes(attributes, page = 1, limit = 10, order = [['id', 'ASC']]) {
-        const webs = await web_entity_1.Web.findAll({
+    async findWithAttributes(attributes, page = 1, limit = 10, filter = {}, order = [['id', 'ASC']]) {
+        let query = {
             offset: page * limit - limit,
             limit: limit,
             attributes: attributes,
             order: order,
-        });
+        };
+        if (Object.keys(filter).length) {
+            query.where = filter;
+        }
+        const webs = await web_entity_1.Web.findAll(query);
         return webs;
     }
 };

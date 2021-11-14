@@ -14,6 +14,7 @@ const platform_express_1 = require("@nestjs/platform-express");
 const database_module_1 = require("./config/database/database.module");
 const web_module_1 = require("./web/web.module");
 const user_module_1 = require("./user/user.module");
+const report_module_1 = require("./report/report.module");
 const utils_module_1 = require("./utils/utils.module");
 let AppModule = class AppModule {
 };
@@ -39,6 +40,7 @@ AppModule = __decorate([
             utils_module_1.UtilsModule,
             user_module_1.UserModule,
             web_module_1.WebModule,
+            report_module_1.ReportModule
         ],
     })
 ], AppModule);
