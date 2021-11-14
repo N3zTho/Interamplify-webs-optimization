@@ -23,7 +23,7 @@ export class WebService {
             const order: Array<string>[] = [['dominio', 'ASC']];
             const filter: any = {
                 id_gestor: {
-                    [Op.eq]: null,
+                    [Op.ne]: null,
                 },
             };
             let matched: Array<string> = [];
