@@ -29,7 +29,7 @@ let WebService = class WebService {
             const order = [['dominio', 'ASC']];
             const filter = {
                 id_gestor: {
-                    [Op.eq]: null,
+                    [Op.ne]: null,
                 },
             };
             let matched = [];
