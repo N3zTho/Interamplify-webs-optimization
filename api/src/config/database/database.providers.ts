@@ -3,6 +3,7 @@ import { databaseConfig } from './database.config';
 import { Web } from '../../web/web.entity';
 import { User } from '../../user/user.entity';
 import { Person } from '../../user/person.entity';
+import { InternalReport } from '../../report/models/internal-report.model';
 
 const SEQUELIZE = 'SEQUELIZE';
 const DEVELOPMENT = 'development';
@@ -28,7 +29,7 @@ export const databaseProviders = [
           config = databaseConfig.development;
       }
       const sequelize = new Sequelize(config);
-      sequelize.addModels([Web, User, Person]);
+      sequelize.addModels([Web, User, Person, InternalReport]);
 
       return sequelize;
     },

@@ -5,6 +5,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { DatabaseModule } from './config/database/database.module';
 import { WebModule } from './web/web.module';
 import { UserModule } from './user/user.module';
+import { ReportModule } from './report/report.module';
 import { UtilsModule } from './utils/utils.module';
 
 @Module({
@@ -28,6 +29,7 @@ import { UtilsModule } from './utils/utils.module';
     UtilsModule,
     UserModule,
     WebModule,
+    ReportModule
   ],
 })
 export class AppModule {}

@@ -1,4 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { Op } from 'sequelize';
 import { Web } from './web.entity';
 import { WebRepository } from './web.repository';
 import * as XLSX from 'xlsx';
@@ -16,8 +17,15 @@ export class WebService {
 
     async duplicates(domains: Array<string> ): Promise<string> {
         try {
+            const { Op } = require("sequelize");
+
             const attributes: Array<string> = ['id', 'dominio'];
             const order: Array<string>[] = [['dominio', 'ASC']];
+            const filter: any = {
+                id_gestor: {
+                    [Op.eq]: null,
+                },
+            };
             let matched: Array<string> = [];
 
             let page = 1;
@@ -28,7 +36,7 @@ export class WebService {
             domains.sort();
 
             while (flag) {
-                const webs: Web[] = await this.webRepository.findWithAttributes(attributes, page, limit, order);
+                const webs: Web[] = await this.webRepository.findWithAttributes(attributes, page, limit, filter, order);
                 if (webs.length > 0) {
 
                     const matchedWeb: Array<string> = domains.filter(d => webs.some(w =>
@@ -63,7 +71,7 @@ export class WebService {
             const unmatchedWS = XLSX.utils.aoa_to_sheet(unmatchedDomains);
             XLSX.utils.book_append_sheet(wb, unmatchedWS, 'Unmatched Domains');
 
-            const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}.xlsx`;
+            const uniqueSuffix = `duplicates-${Date.now()}-${Math.round(Math.random() * 1e9)}.xlsx`;
             const fileName: string = path.resolve(__dirname, '../../', './public', uniqueSuffix);
             XLSX.writeFile(wb, fileName);
 
