@@ -1,13 +1,14 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Op } from 'sequelize';
-import { Web } from './web.entity';
-import { WebRepository } from './web.repository';
 import * as XLSX from 'xlsx';
 import * as path from 'path';
+import { Web } from './web.entity';
+import { WebRepository } from './web.repository';
+import { GestorService } from "../user/services/gestor.service";
 
 @Injectable()
 export class WebService {
-    constructor(private webRepository: WebRepository) { }
+    constructor(private webRepository: WebRepository, private gestorService: GestorService) { }
 
     async findAll(): Promise<Web[]> {
         const webs: Web[] = await this.webRepository.findAll();
@@ -17,13 +18,17 @@ export class WebService {
 
     async duplicates(domains: Array<string> ): Promise<string> {
         try {
-            const { Op } = require("sequelize");
 
+            const gestoresId = [];
+            const gestores = await this.gestorService.getByType(false);
+            gestores.map(gestor => {
+                gestoresId.push(gestor.get('id'));
+            });
             const attributes: Array<string> = ['id', 'dominio'];
             const order: Array<string>[] = [['dominio', 'ASC']];
             const filter: any = {
                 id_gestor: {
-                    [Op.ne]: null,
+                    [Op.in]: gestoresId,
                 },
             };
             let matched: Array<string> = [];
