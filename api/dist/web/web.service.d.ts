@@ -1,8 +1,10 @@
 import { Web } from './web.entity';
 import { WebRepository } from './web.repository';
+import { GestorService } from "../user/services/gestor.service";
 export declare class WebService {
     private webRepository;
-    constructor(webRepository: WebRepository);
+    private gestorService;
+    constructor(webRepository: WebRepository, gestorService: GestorService);
     findAll(): Promise<Web[]>;
     duplicates(domains: Array<string>): Promise<string>;
 }

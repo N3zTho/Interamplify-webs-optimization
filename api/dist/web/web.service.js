@@ -11,12 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebService = void 0;
 const common_1 = require("@nestjs/common");
-const web_repository_1 = require("./web.repository");
+const sequelize_1 = require("sequelize");
 const XLSX = require("xlsx");
 const path = require("path");
+const web_repository_1 = require("./web.repository");
+const gestor_service_1 = require("../user/services/gestor.service");
 let WebService = class WebService {
-    constructor(webRepository) {
+    constructor(webRepository, gestorService) {
         this.webRepository = webRepository;
+        this.gestorService = gestorService;
     }
     async findAll() {
         const webs = await this.webRepository.findAll();
@@ -24,12 +27,16 @@ let WebService = class WebService {
     }
     async duplicates(domains) {
         try {
-            const { Op } = require("sequelize");
+            const gestoresId = [];
+            const gestores = await this.gestorService.getByType(false);
+            gestores.map(gestor => {
+                gestoresId.push(gestor.get('id'));
+            });
             const attributes = ['id', 'dominio'];
             const order = [['dominio', 'ASC']];
             const filter = {
                 id_gestor: {
-                    [Op.ne]: null,
+                    [sequelize_1.Op.in]: gestoresId,
                 },
             };
             let matched = [];
@@ -77,7 +84,7 @@ let WebService = class WebService {
 };
 WebService = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [web_repository_1.WebRepository])
+    __metadata("design:paramtypes", [web_repository_1.WebRepository, gestor_service_1.GestorService])
 ], WebService);
 exports.WebService = WebService;
 //# sourceMappingURL=web.service.js.map
