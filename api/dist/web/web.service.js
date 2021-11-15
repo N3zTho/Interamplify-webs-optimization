@@ -24,15 +24,21 @@ let WebService = class WebService {
     }
     async duplicates(domains) {
         try {
+            const { Op } = require("sequelize");
             const attributes = ['id', 'dominio'];
             const order = [['dominio', 'ASC']];
+            const filter = {
+                id_gestor: {
+                    [Op.ne]: null,
+                },
+            };
             let matched = [];
             let page = 1;
             const limit = 500;
             let flag = true;
             domains.sort();
             while (flag) {
-                const webs = await this.webRepository.findWithAttributes(attributes, page, limit, order);
+                const webs = await this.webRepository.findWithAttributes(attributes, page, limit, filter, order);
                 if (webs.length > 0) {
                     const matchedWeb = domains.filter(d => webs.some(w => d['Domains'].toLowerCase() === w['dominio'].toLowerCase()));
                     if (matchedWeb.length > 0) {
@@ -58,7 +64,7 @@ let WebService = class WebService {
             XLSX.utils.book_append_sheet(wb, matchedWS, 'Matched Domains');
             const unmatchedWS = XLSX.utils.aoa_to_sheet(unmatchedDomains);
             XLSX.utils.book_append_sheet(wb, unmatchedWS, 'Unmatched Domains');
-            const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}.xlsx`;
+            const uniqueSuffix = `duplicates-${Date.now()}-${Math.round(Math.random() * 1e9)}.xlsx`;
             const fileName = path.resolve(__dirname, '../../', './public', uniqueSuffix);
             XLSX.writeFile(wb, fileName);
             return fileName;
