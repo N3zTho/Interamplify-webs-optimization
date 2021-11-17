@@ -27,7 +27,7 @@ let WebService = class WebService {
     async duplicates(domains) {
         try {
             const gestoresId = [];
-            const gestores = await this.gestorService.getByType(true);
+            const gestores = await this.gestorService.getByType(false);
             gestores.map(gestor => {
                 gestoresId.push(gestor.get('id'));
             });
@@ -42,7 +42,7 @@ let WebService = class WebService {
                 const webs = await this.webRepository.findWithAttributes(attributes, page, limit, {}, order);
                 if (webs.length > 0) {
                     const matchedWeb = domains.filter(d => webs.some(w => d['Domains'].toLowerCase() === w['dominio'].toLowerCase() &&
-                        !gestoresId.includes(w['id_gestor'])));
+                        gestoresId.includes(w['id_gestor'])));
                     if (matchedWeb.length > 0) {
                         matched.push(...matchedWeb);
                     }
