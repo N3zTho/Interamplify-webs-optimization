@@ -20,17 +20,12 @@ export class WebService {
         try {
 
             const gestoresId = [];
-            const gestores = await this.gestorService.getByType(false);
+            const gestores = await this.gestorService.getByType(true);
             gestores.map(gestor => {
                 gestoresId.push(gestor.get('id'));
             });
-            const attributes: Array<string> = ['id', 'dominio'];
+            const attributes: Array<string> = ['id', 'dominio', 'id_gestor'];
             const order: Array<string>[] = [['dominio', 'ASC']];
-            const filter: any = {
-                id_gestor: {
-                    [Op.in]: gestoresId,
-                },
-            };
             let matched: Array<string> = [];
 
             let page = 1;
@@ -41,11 +36,13 @@ export class WebService {
             domains.sort();
 
             while (flag) {
-                const webs: Web[] = await this.webRepository.findWithAttributes(attributes, page, limit, filter, order);
+                const webs: Web[] = await this.webRepository.findWithAttributes(attributes, page, limit, {}, order);
                 if (webs.length > 0) {
 
-                    const matchedWeb: Array<string> = domains.filter(d => webs.some(w =>
-                        d['Domains'].toLowerCase() === w['dominio'].toLowerCase()
+                    const matchedWeb: Array<string> = domains.filter(d => webs.some(
+                        w =>
+                            d['Domains'].toLowerCase() === w['dominio'].toLowerCase() &&
+                            !gestoresId.includes(w['id_gestor'])
                     ));
 
                     if(matchedWeb.length > 0) {
