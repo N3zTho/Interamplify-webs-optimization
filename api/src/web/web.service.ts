@@ -20,7 +20,7 @@ export class WebService {
         try {
 
             const gestoresId = [];
-            const gestores = await this.gestorService.getByType(true);
+            const gestores = await this.gestorService.getByType(false);
             gestores.map(gestor => {
                 gestoresId.push(gestor.get('id'));
             });
@@ -42,7 +42,7 @@ export class WebService {
                     const matchedWeb: Array<string> = domains.filter(d => webs.some(
                         w =>
                             d['Domains'].toLowerCase() === w['dominio'].toLowerCase() &&
-                            !gestoresId.includes(w['id_gestor'])
+                            gestoresId.includes(w['id_gestor'])
                     ));
 
                     if(matchedWeb.length > 0) {
