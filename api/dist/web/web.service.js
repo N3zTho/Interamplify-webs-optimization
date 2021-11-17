@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebService = void 0;
 const common_1 = require("@nestjs/common");
-const sequelize_1 = require("sequelize");
 const XLSX = require("xlsx");
 const path = require("path");
 const web_repository_1 = require("./web.repository");
@@ -28,26 +27,22 @@ let WebService = class WebService {
     async duplicates(domains) {
         try {
             const gestoresId = [];
-            const gestores = await this.gestorService.getByType(false);
+            const gestores = await this.gestorService.getByType(true);
             gestores.map(gestor => {
                 gestoresId.push(gestor.get('id'));
             });
-            const attributes = ['id', 'dominio'];
+            const attributes = ['id', 'dominio', 'id_gestor'];
             const order = [['dominio', 'ASC']];
-            const filter = {
-                id_gestor: {
-                    [sequelize_1.Op.in]: gestoresId,
-                },
-            };
             let matched = [];
             let page = 1;
             const limit = 500;
             let flag = true;
             domains.sort();
             while (flag) {
-                const webs = await this.webRepository.findWithAttributes(attributes, page, limit, filter, order);
+                const webs = await this.webRepository.findWithAttributes(attributes, page, limit, {}, order);
                 if (webs.length > 0) {
-                    const matchedWeb = domains.filter(d => webs.some(w => d['Domains'].toLowerCase() === w['dominio'].toLowerCase()));
+                    const matchedWeb = domains.filter(d => webs.some(w => d['Domains'].toLowerCase() === w['dominio'].toLowerCase() &&
+                        !gestoresId.includes(w['id_gestor'])));
                     if (matchedWeb.length > 0) {
                         matched.push(...matchedWeb);
                     }
