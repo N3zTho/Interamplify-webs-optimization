@@ -42,7 +42,7 @@ export class WebService {
                         w =>
                             d['Domains'].toLowerCase() === w['dominio'].toLowerCase() &&
                                 ( gestoresId.includes(w['id_gestor']) ||
-                                    w.webGestores.some(wg => gestoresId.includes(wg.gestor_id)))
+                                    w['webGestores'].some(wg => gestoresId.includes(wg.gestor_id)))
 
                     ));
                     // const matchedWeb: Array<string> = domains.filter(d => webs.some(
