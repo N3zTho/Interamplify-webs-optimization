@@ -24,7 +24,6 @@ export class WebService {
             gestores.map(gestor => {
                 gestoresId.push(gestor.get('id'));
             });
-            const attributes: Array<string> = ['id', 'dominio', 'id_gestor'];
             const order: Array<string>[] = [['dominio', 'ASC']];
             let matched: Array<string> = [];
 
@@ -36,14 +35,21 @@ export class WebService {
             domains.sort();
 
             while (flag) {
-                const webs: Web[] = await this.webRepository.findWithAttributes(attributes, page, limit, {}, order);
+                const webs: Web[] = await this.webRepository.findWebsForDuplicates(page, limit, order);
                 if (webs.length > 0) {
 
                     const matchedWeb: Array<string> = domains.filter(d => webs.some(
                         w =>
                             d['Domains'].toLowerCase() === w['dominio'].toLowerCase() &&
-                            gestoresId.includes(w['id_gestor'])
+                                ( gestoresId.includes(w['id_gestor']) ||
+                                    w.webGestores.some(wg => gestoresId.includes(wg.gestor_id)))
+
                     ));
+                    // const matchedWeb: Array<string> = domains.filter(d => webs.some(
+                    //     w =>
+                    //         d['Domains'].toLowerCase() === w['dominio'].toLowerCase() &&
+                    //         ( gestoresId.includes(w['id_gestor']) || gestoresId.includes(w['webGestores.gestor_id']))
+                    // ));
 
                     if(matchedWeb.length > 0) {
                         matched.push(...matchedWeb);

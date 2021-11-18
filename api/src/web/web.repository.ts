@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Web } from './web.entity';
+import { WebGestor} from "./models/web-gestor.model";
 
 @Injectable()
 export class WebRepository {
@@ -34,6 +35,26 @@ export class WebRepository {
     if(Object.keys(filter).length) {
       query.where = filter;
     }
+
+    const webs = await Web.findAll(query);
+
+    return webs;
+  }
+
+  async findWebsForDuplicates(page = 1, limit = 10 , order: any =  [['id', 'ASC']]): Promise<Web[]> {
+
+    let query: any = {
+      attributes: ['id', 'dominio', 'id_gestor'],
+      include: [
+        {
+          model: WebGestor, attributes: ['gestor_id'], required:false
+        },
+      ],
+      offset: page * limit - limit,
+      limit: limit,
+      order: order,
+      // raw: true
+    };
 
     const webs = await Web.findAll(query);
 
