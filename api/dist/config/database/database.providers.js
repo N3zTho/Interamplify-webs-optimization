@@ -4,6 +4,7 @@ exports.databaseProviders = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const database_config_1 = require("./database.config");
 const web_entity_1 = require("../../web/web.entity");
+const web_gestor_model_1 = require("../../web/models/web-gestor.model");
 const user_entity_1 = require("../../user/user.entity");
 const person_entity_1 = require("../../user/person.entity");
 const gestor_model_1 = require("../../user/models/gestor.model");
@@ -31,7 +32,7 @@ exports.databaseProviders = [
                     config = database_config_1.databaseConfig.development;
             }
             const sequelize = new sequelize_typescript_1.Sequelize(config);
-            sequelize.addModels([web_entity_1.Web, user_entity_1.User, person_entity_1.Person, gestor_model_1.Gestor, internal_report_model_1.InternalReport]);
+            sequelize.addModels([web_entity_1.Web, web_gestor_model_1.WebGestor, user_entity_1.User, person_entity_1.Person, gestor_model_1.Gestor, internal_report_model_1.InternalReport]);
             return sequelize;
         },
     },

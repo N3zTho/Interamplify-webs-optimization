@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebRepository = void 0;
 const common_1 = require("@nestjs/common");
 const web_entity_1 = require("./web.entity");
+const web_gestor_model_1 = require("./models/web-gestor.model");
 let WebRepository = class WebRepository {
     async findAll(params = {}, page = 1, limit = 10) {
         const webs = await web_entity_1.Web.findAll({
@@ -31,6 +32,21 @@ let WebRepository = class WebRepository {
         if (Object.keys(filter).length) {
             query.where = filter;
         }
+        const webs = await web_entity_1.Web.findAll(query);
+        return webs;
+    }
+    async findWebsForDuplicates(page = 1, limit = 10, order = [['id', 'ASC']]) {
+        let query = {
+            attributes: ['id', 'dominio', 'id_gestor'],
+            include: [
+                {
+                    model: web_gestor_model_1.WebGestor, attributes: ['gestor_id'], required: false
+                },
+            ],
+            offset: page * limit - limit,
+            limit: limit,
+            order: order,
+        };
         const webs = await web_entity_1.Web.findAll(query);
         return webs;
     }
