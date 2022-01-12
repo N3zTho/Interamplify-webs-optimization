@@ -43,7 +43,7 @@ __decorate([
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", Boolean)
-], Gestor.prototype, "excluir_webs", void 0);
+], Gestor.prototype, "plataforma", void 0);
 __decorate([
     sequelize_typescript_1.CreatedAt,
     sequelize_typescript_1.Column({

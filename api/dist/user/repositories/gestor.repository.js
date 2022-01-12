@@ -25,7 +25,7 @@ let GestorRepository = class GestorRepository {
     async findGestoresByType(type) {
         const gestores = await gestor_model_1.Gestor.findAll({
             where: {
-                excluir_webs: {
+                plataforma: {
                     [sequelize_1.Op.eq]: type,
                 },
             }
