@@ -28,7 +28,7 @@ export class Gestor extends Model {
     is_agency: boolean;
 
     @Column
-    excluir_webs: boolean;
+    plataforma: boolean;
 
     @CreatedAt
     @Column({
