@@ -23,7 +23,7 @@ export class GestorRepository {
     async findGestoresByType(type: boolean): Promise<Gestor[]> {
         const gestores = await Gestor.findAll({
            where: {
-               excluir_webs: {
+               plataforma: {
                    [Op.eq]: type,
                },
            }
