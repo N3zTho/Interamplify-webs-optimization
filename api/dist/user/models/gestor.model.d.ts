@@ -4,7 +4,7 @@ export declare class Gestor extends Model {
     id_persona: bigint;
     id_usuario: bigint;
     is_agency: boolean;
-    excluir_webs: boolean;
+    plataforma: boolean;
     createdAt: Date;
     updatedAt: Date;
 }

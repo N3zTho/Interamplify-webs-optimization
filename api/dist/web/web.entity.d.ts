@@ -1,4 +1,5 @@
 import { Model } from 'sequelize-typescript';
+import { WebGestor } from "./models/web-gestor.model";
 export declare class Web extends Model {
     id: bigint;
     dominio: string;
@@ -18,4 +19,5 @@ export declare class Web extends Model {
     fecha_upload: Date;
     createdAt: Date;
     updatedAt: Date;
+    webGestores: WebGestor[];
 }

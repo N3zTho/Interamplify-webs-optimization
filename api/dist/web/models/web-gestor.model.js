@@ -9,10 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Web = void 0;
+exports.WebGestor = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
-const web_gestor_model_1 = require("./models/web-gestor.model");
-let Web = class Web extends sequelize_typescript_1.Model {
+const web_entity_1 = require("../web.entity");
+let WebGestor = class WebGestor extends sequelize_typescript_1.Model {
 };
 __decorate([
     sequelize_typescript_1.Column({
@@ -22,79 +22,42 @@ __decorate([
         allowNull: false,
     }),
     __metadata("design:type", typeof BigInt === "function" ? BigInt : Object)
-], Web.prototype, "id", void 0);
+], WebGestor.prototype, "id", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.STRING,
+        type: sequelize_typescript_1.DataType.BIGINT.UNSIGNED,
         allowNull: false,
     }),
-    __metadata("design:type", String)
-], Web.prototype, "dominio", void 0);
+    sequelize_typescript_1.ForeignKey(() => web_entity_1.Web),
+    __metadata("design:type", Number)
+], WebGestor.prototype, "web_id", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.BOOLEAN,
+        type: sequelize_typescript_1.DataType.BIGINT.UNSIGNED,
         allowNull: false,
-    }),
-    __metadata("design:type", Boolean)
-], Web.prototype, "disponible", void 0);
-__decorate([
-    sequelize_typescript_1.Column,
-    __metadata("design:type", String)
-], Web.prototype, "comentarios", void 0);
-__decorate([
-    sequelize_typescript_1.Column,
-    __metadata("design:type", String)
-], Web.prototype, "pais", void 0);
-__decorate([
-    sequelize_typescript_1.Column,
-    __metadata("design:type", String)
-], Web.prototype, "idioma", void 0);
-__decorate([
-    sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.INTEGER,
     }),
     __metadata("design:type", Number)
-], Web.prototype, "precio", void 0);
+], WebGestor.prototype, "gestor_id", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         type: sequelize_typescript_1.DataType.DECIMAL(8, 2),
     }),
     __metadata("design:type", Number)
-], Web.prototype, "precio_venta", void 0);
-__decorate([
-    sequelize_typescript_1.Column,
-    __metadata("design:type", String)
-], Web.prototype, "tipo_contacto", void 0);
+], WebGestor.prototype, "precio", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         type: sequelize_typescript_1.DataType.STRING(3),
     }),
     __metadata("design:type", String)
-], Web.prototype, "divisa", void 0);
-__decorate([
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], Web.prototype, "id_gestor", void 0);
+], WebGestor.prototype, "divisa", void 0);
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", Boolean)
-], Web.prototype, "gambling", void 0);
+], WebGestor.prototype, "gambling", void 0);
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
-], Web.prototype, "imagen", void 0);
-__decorate([
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Boolean)
-], Web.prototype, "executed_cron_spy", void 0);
-__decorate([
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Boolean)
-], Web.prototype, "executed_secure_cron_spy", void 0);
-__decorate([
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Date)
-], Web.prototype, "fecha_upload", void 0);
+], WebGestor.prototype, "comentarios", void 0);
 __decorate([
     sequelize_typescript_1.CreatedAt,
     sequelize_typescript_1.Column({
@@ -102,7 +65,7 @@ __decorate([
         type: sequelize_typescript_1.DataType.DATE
     }),
     __metadata("design:type", Date)
-], Web.prototype, "createdAt", void 0);
+], WebGestor.prototype, "createdAt", void 0);
 __decorate([
     sequelize_typescript_1.UpdatedAt,
     sequelize_typescript_1.Column({
@@ -110,15 +73,15 @@ __decorate([
         type: sequelize_typescript_1.DataType.DATE
     }),
     __metadata("design:type", Date)
-], Web.prototype, "updatedAt", void 0);
+], WebGestor.prototype, "updatedAt", void 0);
 __decorate([
-    sequelize_typescript_1.HasMany(() => web_gestor_model_1.WebGestor, { foreignKey: "web_id" }),
-    __metadata("design:type", Array)
-], Web.prototype, "webGestores", void 0);
-Web = __decorate([
+    sequelize_typescript_1.BelongsTo(() => web_entity_1.Web, { foreignKey: "web_id" }),
+    __metadata("design:type", web_entity_1.Web)
+], WebGestor.prototype, "web", void 0);
+WebGestor = __decorate([
     sequelize_typescript_1.Table({
-        tableName: "web"
+        tableName: "web_gestor"
     })
-], Web);
-exports.Web = Web;
-//# sourceMappingURL=web.entity.js.map
+], WebGestor);
+exports.WebGestor = WebGestor;
+//# sourceMappingURL=web-gestor.model.js.map
