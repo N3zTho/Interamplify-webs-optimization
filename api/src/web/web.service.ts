@@ -40,16 +40,11 @@ export class WebService {
 
                     const matchedWeb: Array<string> = domains.filter(d => webs.some(
                         w =>
-                            d['Domains'].toLowerCase() === w['dominio'].toLowerCase() &&
+                            d['Domains'] && w['dominio'] && d['Domains'].toLowerCase() === w['dominio'].toLowerCase() &&
                                 ( gestoresId.includes(w['id_gestor']) ||
                                     w['webGestores'].some(wg => gestoresId.includes(wg.gestor_id)))
 
                     ));
-                    // const matchedWeb: Array<string> = domains.filter(d => webs.some(
-                    //     w =>
-                    //         d['Domains'].toLowerCase() === w['dominio'].toLowerCase() &&
-                    //         ( gestoresId.includes(w['id_gestor']) || gestoresId.includes(w['webGestores.gestor_id']))
-                    // ));
 
                     if(matchedWeb.length > 0) {
                         matched.push(...matchedWeb);
