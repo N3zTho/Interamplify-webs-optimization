@@ -31,7 +31,8 @@ export class DuplicatesConsumer {
 
         try {
             this.logger.debug('Parsing csv file');
-            const result = await this.csvParser.parse(job.data.fileName);
+            // const result = await this.csvParser.parse(job.data.fileName);
+            const result = await this.csvParser.parsev2(job.data.fileName);
 
             this.logger.debug('Removing csv file');
             fs.unlinkSync(`public/${job.data.fileName}`);
