@@ -38,10 +38,12 @@ export class CsvHelperService {
             const data = stream.toString("utf8");
             const resultData = await parse(data, {
                 quotes: false,
+                quoteChar: '"',
                 escapeChar: '"',
                 delimiter: ",",
                 header: true,
-                skipEmptyLines: true
+                skipEmptyLines: true,
+                transformHeader:(header) => header.trim()
             });
 
             if (resultData.data) {
