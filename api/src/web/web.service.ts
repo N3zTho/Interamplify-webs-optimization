@@ -39,6 +39,7 @@ export class WebService {
                     console.log(d['Domains']);
                 } else {
                     console.log('Empty');
+                    console.log(d);
                 }
             });
             console.log(gestoresId);
