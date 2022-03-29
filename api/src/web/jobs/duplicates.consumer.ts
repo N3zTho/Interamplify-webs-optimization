@@ -36,8 +36,11 @@ export class DuplicatesConsumer {
             this.logger.debug('Removing csv file');
             fs.unlinkSync(`public/${job.data.fileName}`);
 
-            this.logger.debug('Generating file');
+            this.logger.debug(`Processing data size:${result.length}`);
+            console.log(result);
             const filePath = await this.webService.duplicates(result);
+
+            this.logger.debug('Generating file');
             const uniqueSuffix = `duplicate_domains/${Date.now()}-${Math.round(Math.random() * 1e9)}.xlsx`;
 
             this.logger.debug('Uploading file to cloud storage');
