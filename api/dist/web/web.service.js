@@ -37,10 +37,19 @@ let WebService = class WebService {
             const limit = 500;
             let flag = true;
             domains.sort();
+            domains.map(d => {
+                if (d['Domains']) {
+                    console.log(d['Domains']);
+                }
+                else {
+                    console.log('Empty');
+                }
+            });
+            console.log(gestoresId);
             while (flag) {
                 const webs = await this.webRepository.findWebsForDuplicates(page, limit, order);
                 if (webs.length > 0) {
-                    const matchedWeb = domains.filter(d => webs.some(w => d['Domains'] && w['dominio'] && d['Domains'].toLowerCase() === w['dominio'].toLowerCase() &&
+                    const matchedWeb = domains.filter(d => webs.some(w => d['Domains'] && w['dominio'] && d['Domains'].trim().toLowerCase() === w['dominio'].toLowerCase() &&
                         (gestoresId.includes(w['id_gestor']) ||
                             w['webGestores'].some(wg => gestoresId.includes(wg.gestor_id)))));
                     if (matchedWeb.length > 0) {
