@@ -28,21 +28,11 @@ export class WebService {
             let matched: Array<string> = [];
 
             let page = 1;
-            const limit = 500;
+            const limit = 1000;
 
             let flag = true;
 
             domains.sort();
-
-            domains.map(d => {
-                if(d['Domains']) {
-                    console.log(d['Domains']);
-                } else {
-                    console.log('Empty');
-                    console.log(d);
-                }
-            });
-            console.log(gestoresId);
 
             while (flag) {
                 const webs: Web[] = await this.webRepository.findWebsForDuplicates(page, limit, order);
@@ -74,6 +64,75 @@ export class WebService {
                 matchedDomains.push([m['Domains']]);
             });
             domains.map(um => {
+                unmatchedDomains.push([um['Domains']]);
+            });
+
+            const wb = XLSX.utils.book_new();
+            const matchedWS = XLSX.utils.aoa_to_sheet(matchedDomains);
+            XLSX.utils.book_append_sheet(wb, matchedWS, 'Matched Domains');
+
+            const unmatchedWS = XLSX.utils.aoa_to_sheet(unmatchedDomains);
+            XLSX.utils.book_append_sheet(wb, unmatchedWS, 'Unmatched Domains');
+
+            const uniqueSuffix = `duplicates-${Date.now()}-${Math.round(Math.random() * 1e9)}.xlsx`;
+            const fileName: string = path.resolve(__dirname, '../../', './public', uniqueSuffix);
+            XLSX.writeFile(wb, fileName);
+
+            return fileName;
+
+        } catch (e) {
+            console.log(e);
+        }
+
+        return "error";
+    }
+
+    async duplicatesV2(domains: Array<string> ): Promise<string> {
+        try {
+
+            const gestoresId = [];
+            const gestores = await this.gestorService.getByType(false);
+            gestores.map(gestor => {
+                gestoresId.push(gestor.get('id'));
+            });
+            const matched: Array<string> = [];
+
+            domains.sort();
+
+            const chunkSize = 20;
+            const groups = domains.map((e, i) => {
+                return i % chunkSize === 0 ? domains.slice(i, i + chunkSize) : null;
+            }).filter(e => { return e; });
+
+            for await (const it of groups) {
+                console.log(`Processing ${it.length} domains`);
+
+                const domainList = it.map(d => d['Domains']);
+
+                const webs: Web[] = await this.webRepository.findWebsForDuplicatesV2(domainList);
+
+                if (webs.length > 0) {
+                    const matchedWeb: Array<string> = domainList.filter(d => webs.some(
+                        w =>
+                            d === w['dominio'] && (gestoresId.includes(w['id_gestor']) ||
+                            w['webGestores'].some(wg => gestoresId.includes(wg.gestor_id)))
+                    ));
+
+                    if (matchedWeb.length > 0) {
+                        matched.push(...matchedWeb);
+                    }
+                }
+            }
+
+            const matchedDomains = [["Domains"]];
+            const unmatchedDomains = [["Domains"]];
+            matched.map(m => {
+                matchedDomains.push([m]);
+            });
+
+            const unmatched = domains.filter(d => !matched.some(m => d['Domains'] === m));
+
+            unmatched.map(um => {
                 unmatchedDomains.push([um['Domains']]);
             });
 
