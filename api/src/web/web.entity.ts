@@ -1,4 +1,4 @@
-import {Table, Column, Model, DataType, CreatedAt, UpdatedAt, HasMany} from 'sequelize-typescript';
+import {Table, Column, Model, DataType, CreatedAt, UpdatedAt, DeletedAt, HasMany} from 'sequelize-typescript';
 import {WebGestor} from "./models/web-gestor.model";
 
 @Table({
@@ -83,6 +83,13 @@ export class Web extends Model {
         type: DataType.DATE
     })
     updatedAt: Date;
+
+    @DeletedAt
+    @Column({
+        field: "deleted_at",
+        type: DataType.DATE
+    })
+    deletedAt: Date;
 
     @HasMany(() => WebGestor, { foreignKey: "web_id" })
     webGestores: WebGestor[];
