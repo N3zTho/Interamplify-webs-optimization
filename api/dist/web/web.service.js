@@ -8,6 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebService = void 0;
 const common_1 = require("@nestjs/common");
@@ -34,19 +41,9 @@ let WebService = class WebService {
             const order = [['dominio', 'ASC']];
             let matched = [];
             let page = 1;
-            const limit = 500;
+            const limit = 1000;
             let flag = true;
             domains.sort();
-            domains.map(d => {
-                if (d['Domains']) {
-                    console.log(d['Domains']);
-                }
-                else {
-                    console.log('Empty');
-                    console.log(d);
-                }
-            });
-            console.log(gestoresId);
             while (flag) {
                 const webs = await this.webRepository.findWebsForDuplicates(page, limit, order);
                 if (webs.length > 0) {
@@ -69,6 +66,66 @@ let WebService = class WebService {
                 matchedDomains.push([m['Domains']]);
             });
             domains.map(um => {
+                unmatchedDomains.push([um['Domains']]);
+            });
+            const wb = XLSX.utils.book_new();
+            const matchedWS = XLSX.utils.aoa_to_sheet(matchedDomains);
+            XLSX.utils.book_append_sheet(wb, matchedWS, 'Matched Domains');
+            const unmatchedWS = XLSX.utils.aoa_to_sheet(unmatchedDomains);
+            XLSX.utils.book_append_sheet(wb, unmatchedWS, 'Unmatched Domains');
+            const uniqueSuffix = `duplicates-${Date.now()}-${Math.round(Math.random() * 1e9)}.xlsx`;
+            const fileName = path.resolve(__dirname, '../../', './public', uniqueSuffix);
+            XLSX.writeFile(wb, fileName);
+            return fileName;
+        }
+        catch (e) {
+            console.log(e);
+        }
+        return "error";
+    }
+    async duplicatesV2(domains) {
+        var e_1, _a;
+        try {
+            const gestoresId = [];
+            const gestores = await this.gestorService.getByType(false);
+            gestores.map(gestor => {
+                gestoresId.push(gestor.get('id'));
+            });
+            const matched = [];
+            domains.sort();
+            const chunkSize = 20;
+            const groups = domains.map((e, i) => {
+                return i % chunkSize === 0 ? domains.slice(i, i + chunkSize) : null;
+            }).filter(e => { return e; });
+            try {
+                for (var groups_1 = __asyncValues(groups), groups_1_1; groups_1_1 = await groups_1.next(), !groups_1_1.done;) {
+                    const it = groups_1_1.value;
+                    console.log(`Processing ${it.length} domains`);
+                    const domainList = it.map(d => d['Domains']);
+                    const webs = await this.webRepository.findWebsForDuplicatesV2(domainList);
+                    if (webs.length > 0) {
+                        const matchedWeb = domainList.filter(d => webs.some(w => d === w['dominio'] && (gestoresId.includes(w['id_gestor']) ||
+                            w['webGestores'].some(wg => gestoresId.includes(wg.gestor_id)))));
+                        if (matchedWeb.length > 0) {
+                            matched.push(...matchedWeb);
+                        }
+                    }
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (groups_1_1 && !groups_1_1.done && (_a = groups_1.return)) await _a.call(groups_1);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+            const matchedDomains = [["Domains"]];
+            const unmatchedDomains = [["Domains"]];
+            matched.map(m => {
+                matchedDomains.push([m]);
+            });
+            const unmatched = domains.filter(d => !matched.some(m => d['Domains'] === m));
+            unmatched.map(um => {
                 unmatchedDomains.push([um['Domains']]);
             });
             const wb = XLSX.utils.book_new();

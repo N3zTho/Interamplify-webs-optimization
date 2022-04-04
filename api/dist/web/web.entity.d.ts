@@ -19,5 +19,6 @@ export declare class Web extends Model {
     fecha_upload: Date;
     createdAt: Date;
     updatedAt: Date;
+    deletedAt: Date;
     webGestores: WebGestor[];
 }

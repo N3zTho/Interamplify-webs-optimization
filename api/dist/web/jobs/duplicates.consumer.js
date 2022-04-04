@@ -40,9 +40,14 @@ let DuplicatesConsumer = DuplicatesConsumer_1 = class DuplicatesConsumer {
             const result = await this.csvParser.parsev2(job.data.fileName);
             this.logger.debug('Removing csv file');
             fs.unlinkSync(`public/${job.data.fileName}`);
-            this.logger.debug(`Processing data size:${result.length}`);
-            console.log(result);
-            const filePath = await this.webService.duplicates(result);
+            this.logger.debug(`Processing ${result.length} domains`);
+            let filePath;
+            if (result.length <= 3500) {
+                filePath = await this.webService.duplicatesV2(result);
+            }
+            else {
+                filePath = await this.webService.duplicates(result);
+            }
             this.logger.debug('Generating file');
             const uniqueSuffix = `duplicate_domains/${Date.now()}-${Math.round(Math.random() * 1e9)}.xlsx`;
             this.logger.debug('Uploading file to cloud storage');

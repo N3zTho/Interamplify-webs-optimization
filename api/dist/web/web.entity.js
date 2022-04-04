@@ -112,6 +112,14 @@ __decorate([
     __metadata("design:type", Date)
 ], Web.prototype, "updatedAt", void 0);
 __decorate([
+    sequelize_typescript_1.DeletedAt,
+    sequelize_typescript_1.Column({
+        field: "deleted_at",
+        type: sequelize_typescript_1.DataType.DATE
+    }),
+    __metadata("design:type", Date)
+], Web.prototype, "deletedAt", void 0);
+__decorate([
     sequelize_typescript_1.HasMany(() => web_gestor_model_1.WebGestor, { foreignKey: "web_id" }),
     __metadata("design:type", Array)
 ], Web.prototype, "webGestores", void 0);

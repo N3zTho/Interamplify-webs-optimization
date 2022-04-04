@@ -10,6 +10,7 @@ exports.WebRepository = void 0;
 const common_1 = require("@nestjs/common");
 const web_entity_1 = require("./web.entity");
 const web_gestor_model_1 = require("./models/web-gestor.model");
+const sequelize_1 = require("sequelize");
 let WebRepository = class WebRepository {
     async findAll(params = {}, page = 1, limit = 10) {
         const webs = await web_entity_1.Web.findAll({
@@ -46,6 +47,30 @@ let WebRepository = class WebRepository {
             offset: page * limit - limit,
             limit: limit,
             order: order,
+        };
+        const webs = await web_entity_1.Web.findAll(query);
+        return webs;
+    }
+    async findWebsForDuplicatesV2(domains) {
+        let query = {
+            attributes: ['id', 'dominio', 'id_gestor'],
+            include: [
+                {
+                    model: web_gestor_model_1.WebGestor, attributes: ['gestor_id'], required: false
+                },
+            ],
+            where: {
+                deletedAt: {
+                    [sequelize_1.Op.eq]: null,
+                },
+                dominio: {
+                    [sequelize_1.Op.in]: domains
+                },
+                disponible: {
+                    [sequelize_1.Op.eq]: 1
+                }
+            },
+            order: [['id', 'ASC']]
         };
         const webs = await web_entity_1.Web.findAll(query);
         return webs;
