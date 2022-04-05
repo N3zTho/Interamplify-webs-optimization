@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import {Injectable, Inject, Logger} from '@nestjs/common';
 import { Op } from 'sequelize';
 import * as XLSX from 'xlsx';
 import * as path from 'path';
@@ -9,6 +9,8 @@ import { GestorService } from "../user/services/gestor.service";
 @Injectable()
 export class WebService {
     constructor(private webRepository: WebRepository, private gestorService: GestorService) { }
+
+    private readonly logger = new Logger(WebService.name);
 
     async findAll(): Promise<Web[]> {
         const webs: Web[] = await this.webRepository.findAll();
@@ -90,11 +92,6 @@ export class WebService {
     async duplicatesV2(domains: Array<string> ): Promise<string> {
         try {
 
-            const gestoresId = [];
-            const gestores = await this.gestorService.getByType(false);
-            gestores.map(gestor => {
-                gestoresId.push(gestor.get('id'));
-            });
             const matched: Array<string> = [];
 
             domains.sort();
@@ -105,18 +102,14 @@ export class WebService {
             }).filter(e => { return e; });
 
             for await (const it of groups) {
-                console.log(`Processing ${it.length} domains`);
+                this.logger.debug(`Processing ${it.length} domains`);
 
                 const domainList = it.map(d => d['Domains']);
 
                 const webs: Web[] = await this.webRepository.findWebsForDuplicatesV2(domainList);
 
                 if (webs.length > 0) {
-                    const matchedWeb: Array<string> = domainList.filter(d => webs.some(
-                        w =>
-                            d === w['dominio'] && (gestoresId.includes(w['id_gestor']) ||
-                            w['webGestores'].some(wg => gestoresId.includes(wg.gestor_id)))
-                    ));
+                    const matchedWeb = webs.map(w => w['dominio']);
 
                     if (matchedWeb.length > 0) {
                         matched.push(...matchedWeb);

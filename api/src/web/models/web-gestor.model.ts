@@ -1,5 +1,6 @@
 import {Table, Column, Model, DataType, CreatedAt, UpdatedAt, ForeignKey, BelongsTo} from 'sequelize-typescript';
 import {Web} from "../web.entity";
+import {Gestor} from "../../user/models/gestor.model";
 
 @Table({
     tableName: "web_gestor"
@@ -58,4 +59,7 @@ export class WebGestor extends Model {
 
     @BelongsTo(() => Web, { foreignKey: "web_id" })
     web: Web;
+
+    @BelongsTo(() => Gestor, { foreignKey: "gestor_id" })
+    gestor: Gestor;
 }
