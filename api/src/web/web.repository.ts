@@ -69,10 +69,10 @@ export class WebRepository {
       attributes: ['id', 'dominio', 'id_gestor'],
       include: [
         {
-          model: WebGestor, attributes: ['gestor_id'],
+          model: WebGestor, attributes: ['gestor_id'], required: true,
           include: [
             {
-              model: Gestor,
+              model: Gestor, attributes: ['id', 'plataforma'], required: true,
               where: {
                 plataforma: {
                   [Op.eq]: false,
