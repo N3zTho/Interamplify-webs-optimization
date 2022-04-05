@@ -57,10 +57,10 @@ let WebRepository = class WebRepository {
             attributes: ['id', 'dominio', 'id_gestor'],
             include: [
                 {
-                    model: web_gestor_model_1.WebGestor, attributes: ['gestor_id'],
+                    model: web_gestor_model_1.WebGestor, attributes: ['gestor_id'], required: true,
                     include: [
                         {
-                            model: gestor_model_1.Gestor,
+                            model: gestor_model_1.Gestor, attributes: ['id', 'plataforma'], required: true,
                             where: {
                                 plataforma: {
                                     [sequelize_1.Op.eq]: false,
