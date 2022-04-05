@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const web_entity_1 = require("./web.entity");
 const web_gestor_model_1 = require("./models/web-gestor.model");
 const sequelize_1 = require("sequelize");
+const gestor_model_1 = require("../user/models/gestor.model");
 let WebRepository = class WebRepository {
     async findAll(params = {}, page = 1, limit = 10) {
         const webs = await web_entity_1.Web.findAll({
@@ -56,13 +57,20 @@ let WebRepository = class WebRepository {
             attributes: ['id', 'dominio', 'id_gestor'],
             include: [
                 {
-                    model: web_gestor_model_1.WebGestor, attributes: ['gestor_id'], required: false
+                    model: web_gestor_model_1.WebGestor, attributes: ['gestor_id'],
+                    include: [
+                        {
+                            model: gestor_model_1.Gestor,
+                            where: {
+                                plataforma: {
+                                    [sequelize_1.Op.eq]: false,
+                                }
+                            },
+                        }
+                    ]
                 },
             ],
             where: {
-                deletedAt: {
-                    [sequelize_1.Op.eq]: null,
-                },
                 dominio: {
                     [sequelize_1.Op.in]: domains
                 },

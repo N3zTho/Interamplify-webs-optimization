@@ -15,6 +15,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
+var WebService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebService = void 0;
 const common_1 = require("@nestjs/common");
@@ -22,10 +23,11 @@ const XLSX = require("xlsx");
 const path = require("path");
 const web_repository_1 = require("./web.repository");
 const gestor_service_1 = require("../user/services/gestor.service");
-let WebService = class WebService {
+let WebService = WebService_1 = class WebService {
     constructor(webRepository, gestorService) {
         this.webRepository = webRepository;
         this.gestorService = gestorService;
+        this.logger = new common_1.Logger(WebService_1.name);
     }
     async findAll() {
         const webs = await this.webRepository.findAll();
@@ -86,11 +88,6 @@ let WebService = class WebService {
     async duplicatesV2(domains) {
         var e_1, _a;
         try {
-            const gestoresId = [];
-            const gestores = await this.gestorService.getByType(false);
-            gestores.map(gestor => {
-                gestoresId.push(gestor.get('id'));
-            });
             const matched = [];
             domains.sort();
             const chunkSize = 20;
@@ -100,12 +97,11 @@ let WebService = class WebService {
             try {
                 for (var groups_1 = __asyncValues(groups), groups_1_1; groups_1_1 = await groups_1.next(), !groups_1_1.done;) {
                     const it = groups_1_1.value;
-                    console.log(`Processing ${it.length} domains`);
+                    this.logger.debug(`Processing ${it.length} domains`);
                     const domainList = it.map(d => d['Domains']);
                     const webs = await this.webRepository.findWebsForDuplicatesV2(domainList);
                     if (webs.length > 0) {
-                        const matchedWeb = domainList.filter(d => webs.some(w => d === w['dominio'] && (gestoresId.includes(w['id_gestor']) ||
-                            w['webGestores'].some(wg => gestoresId.includes(wg.gestor_id)))));
+                        const matchedWeb = webs.map(w => w['dominio']);
                         if (matchedWeb.length > 0) {
                             matched.push(...matchedWeb);
                         }
@@ -144,7 +140,7 @@ let WebService = class WebService {
         return "error";
     }
 };
-WebService = __decorate([
+WebService = WebService_1 = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [web_repository_1.WebRepository, gestor_service_1.GestorService])
 ], WebService);

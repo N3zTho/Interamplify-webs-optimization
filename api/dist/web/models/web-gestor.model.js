@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebGestor = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const web_entity_1 = require("../web.entity");
+const gestor_model_1 = require("../../user/models/gestor.model");
 let WebGestor = class WebGestor extends sequelize_typescript_1.Model {
 };
 __decorate([
@@ -78,6 +79,10 @@ __decorate([
     sequelize_typescript_1.BelongsTo(() => web_entity_1.Web, { foreignKey: "web_id" }),
     __metadata("design:type", web_entity_1.Web)
 ], WebGestor.prototype, "web", void 0);
+__decorate([
+    sequelize_typescript_1.BelongsTo(() => gestor_model_1.Gestor, { foreignKey: "gestor_id" }),
+    __metadata("design:type", gestor_model_1.Gestor)
+], WebGestor.prototype, "gestor", void 0);
 WebGestor = __decorate([
     sequelize_typescript_1.Table({
         tableName: "web_gestor"
