@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Web } from './web.entity';
 import { WebGestor} from "./models/web-gestor.model";
 import {Op} from "sequelize";
+import {Gestor} from "../user/models/gestor.model";
 
 @Injectable()
 export class WebRepository {
@@ -68,13 +69,20 @@ export class WebRepository {
       attributes: ['id', 'dominio', 'id_gestor'],
       include: [
         {
-          model: WebGestor, attributes: ['gestor_id'], required:false
+          model: WebGestor, attributes: ['gestor_id'],
+          include: [
+            {
+              model: Gestor,
+              where: {
+                plataforma: {
+                  [Op.eq]: false,
+                }
+              },
+            }
+          ]
         },
       ],
       where: {
-        deletedAt: {
-          [Op.eq]: null,
-        },
         dominio: {
           [Op.in] : domains
         },
