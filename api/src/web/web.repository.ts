@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Web } from './web.entity';
 import { WebGestor} from "./models/web-gestor.model";
-import {Op} from "sequelize";
+import sequelize, {Op} from "sequelize";
 import {Gestor} from "../user/models/gestor.model";
 
 @Injectable()
@@ -83,9 +83,9 @@ export class WebRepository {
         },
       ],
       where: {
-        dominio: {
-          [Op.in] : domains
-        },
+        dominio: sequelize.where(sequelize.fn('LOWER', sequelize.col('dominio')), {
+          [Op.in]: domains
+        }),
         disponible: {
           [Op.eq] : 1
         }
