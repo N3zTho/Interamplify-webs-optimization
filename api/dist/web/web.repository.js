@@ -71,9 +71,9 @@ let WebRepository = class WebRepository {
                 },
             ],
             where: {
-                dominio: {
+                dominio: sequelize_1.default.where(sequelize_1.default.fn('LOWER', sequelize_1.default.col('dominio')), {
                     [sequelize_1.Op.in]: domains
-                },
+                }),
                 disponible: {
                     [sequelize_1.Op.eq]: 1
                 }
