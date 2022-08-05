@@ -101,7 +101,7 @@ let WebService = WebService_1 = class WebService {
                     const domainList = it.map(d => d['Domains'].trim().toLowerCase());
                     const webs = await this.webRepository.findWebsForDuplicatesV2(domainList);
                     if (webs.length > 0) {
-                        const matchedWeb = webs.map(w => w['dominio']);
+                        const matchedWeb = webs.map(w => w['dominio'].toLowerCase());
                         if (matchedWeb.length > 0) {
                             matched.push(...matchedWeb);
                         }
