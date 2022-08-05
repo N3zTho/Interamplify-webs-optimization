@@ -104,7 +104,7 @@ export class WebService {
             for await (const it of groups) {
                 this.logger.debug(`Processing ${it.length} domains`);
 
-                const domainList = it.map(d => d['Domains']);
+                const domainList = it.map(d => d['Domains'].trim().toLowerCase());
 
                 const webs: Web[] = await this.webRepository.findWebsForDuplicatesV2(domainList);
 
@@ -123,7 +123,7 @@ export class WebService {
                 matchedDomains.push([m]);
             });
 
-            const unmatched = domains.filter(d => !matched.some(m => d['Domains'] === m));
+            const unmatched = domains.filter(d => !matched.some(m => d['Domains'].trim().toLowerCase() === m));
 
             unmatched.map(um => {
                 unmatchedDomains.push([um['Domains']]);
