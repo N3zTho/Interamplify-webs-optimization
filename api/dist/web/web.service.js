@@ -98,7 +98,7 @@ let WebService = WebService_1 = class WebService {
                 for (var groups_1 = __asyncValues(groups), groups_1_1; groups_1_1 = await groups_1.next(), !groups_1_1.done;) {
                     const it = groups_1_1.value;
                     this.logger.debug(`Processing ${it.length} domains`);
-                    const domainList = it.map(d => d['Domains']);
+                    const domainList = it.map(d => d['Domains'].trim().toLowerCase());
                     const webs = await this.webRepository.findWebsForDuplicatesV2(domainList);
                     if (webs.length > 0) {
                         const matchedWeb = webs.map(w => w['dominio']);
@@ -120,7 +120,7 @@ let WebService = WebService_1 = class WebService {
             matched.map(m => {
                 matchedDomains.push([m]);
             });
-            const unmatched = domains.filter(d => !matched.some(m => d['Domains'] === m));
+            const unmatched = domains.filter(d => !matched.some(m => d['Domains'].trim().toLowerCase() === m));
             unmatched.map(um => {
                 unmatchedDomains.push([um['Domains']]);
             });
