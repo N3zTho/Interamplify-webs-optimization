@@ -101,7 +101,13 @@ let WebService = WebService_1 = class WebService {
                     const domainList = it.map(d => d['Domains'].trim().toLowerCase());
                     const webs = await this.webRepository.findWebsForDuplicatesV2(domainList);
                     if (webs.length > 0) {
-                        const matchedWeb = webs.map(w => w['dominio'].toLowerCase());
+                        const matchedWeb = webs.map(w => {
+                            const it = {
+                                'domain': w['dominio'].toLowerCase(),
+                                'gambling': w['gambling'] ? true : false
+                            };
+                            return it;
+                        });
                         if (matchedWeb.length > 0) {
                             matched.push(...matchedWeb);
                         }
@@ -115,17 +121,20 @@ let WebService = WebService_1 = class WebService {
                 }
                 finally { if (e_1) throw e_1.error; }
             }
-            const matchedDomains = [["Domains"]];
+            const matchedDomains = [];
             const unmatchedDomains = [["Domains"]];
             matched.map(m => {
-                matchedDomains.push([m]);
+                matchedDomains.push({
+                    Domains: m.domain,
+                    Gambling: m.gambling === true ? 'YES' : 'NO'
+                });
             });
-            const unmatched = domains.filter(d => !matched.some(m => d['Domains'].trim().toLowerCase() === m));
+            const unmatched = domains.filter(d => !matched.some(m => d['Domains'].trim().toLowerCase() === m.domain));
             unmatched.map(um => {
                 unmatchedDomains.push([um['Domains']]);
             });
             const wb = XLSX.utils.book_new();
-            const matchedWS = XLSX.utils.aoa_to_sheet(matchedDomains);
+            const matchedWS = XLSX.utils.json_to_sheet(matchedDomains);
             XLSX.utils.book_append_sheet(wb, matchedWS, 'Matched Domains');
             const unmatchedWS = XLSX.utils.aoa_to_sheet(unmatchedDomains);
             XLSX.utils.book_append_sheet(wb, unmatchedWS, 'Unmatched Domains');

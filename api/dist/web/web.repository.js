@@ -54,7 +54,7 @@ let WebRepository = class WebRepository {
     }
     async findWebsForDuplicatesV2(domains) {
         let query = {
-            attributes: ['id', 'dominio', 'id_gestor'],
+            attributes: ['id', 'dominio', 'gambling', 'id_gestor'],
             include: [
                 {
                     model: web_gestor_model_1.WebGestor, attributes: ['gestor_id'], required: true,
