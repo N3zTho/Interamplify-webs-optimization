@@ -104,7 +104,7 @@ let WebService = WebService_1 = class WebService {
                         const matchedWeb = webs.map(w => {
                             const it = {
                                 'domain': w['dominio'].toLowerCase(),
-                                'gambling': w['gambling'] ? true : false
+                                'gambling': w['gambling'] == true ? true : false
                             };
                             return it;
                         });
