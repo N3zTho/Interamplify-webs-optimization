@@ -92,7 +92,7 @@ export class WebService {
     async duplicatesV2(domains: Array<string> ): Promise<string> {
         try {
 
-            const matched: Array<{domain: string, gambling: boolean}> = [];
+            const matched: Array<any> = [];
 
             domains.sort();
 
@@ -107,12 +107,14 @@ export class WebService {
                 const domainList = it.map(d => d['Domains'].trim().toLowerCase());
 
                 const webs: Web[] = await this.webRepository.findWebsForDuplicatesV2(domainList);
+                webs.map(w => this.logger.debug(w));
 
                 if (webs.length > 0) {
                     const matchedWeb = webs.map(w => {
                      const it =   {
                             'domain': w['dominio'].toLowerCase(),
-                            'gambling': w['gambling'] == true ? true : false
+                            'gambling': w['gambling'] == true ? true : false,
+                            'contact': w['tipo_contacto']
                         };
                      return it;
                     });
@@ -123,13 +125,14 @@ export class WebService {
                 }
             }
 
-            const matchedDomains: Array<{Domains: string, Gambling: string}> = [];
+            const matchedDomains: Array<{}> = [];
             const unmatchedDomains = [["Domains"]];
             matched.map(m => {
                 matchedDomains.push(
                     {
                         Domains: m.domain,
-                        Gambling: m.gambling  === true ? 'YES' : 'NO'
+                        Gambling: m.gambling  === true ? 'YES' : 'NO',
+                        Contact: m.contact
                     }
                 );
             });
