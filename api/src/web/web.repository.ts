@@ -66,7 +66,7 @@ export class WebRepository {
   async findWebsForDuplicatesV2(domains: string[]): Promise<Web[]> {
 
     let query: any = {
-      attributes: ['id', 'dominio', 'gambling', 'id_gestor'],
+      attributes: ['id', 'dominio', 'gambling', 'tipo_contacto', 'id_gestor'],
       include: [
         {
           model: WebGestor, attributes: ['gestor_id'], required: true,
