@@ -100,11 +100,13 @@ let WebService = WebService_1 = class WebService {
                     this.logger.debug(`Processing ${it.length} domains`);
                     const domainList = it.map(d => d['Domains'].trim().toLowerCase());
                     const webs = await this.webRepository.findWebsForDuplicatesV2(domainList);
+                    webs.map(w => this.logger.debug(w));
                     if (webs.length > 0) {
                         const matchedWeb = webs.map(w => {
                             const it = {
                                 'domain': w['dominio'].toLowerCase(),
-                                'gambling': w['gambling'] == true ? true : false
+                                'gambling': w['gambling'] == true ? true : false,
+                                'contact': w['tipo_contacto']
                             };
                             return it;
                         });
@@ -126,7 +128,8 @@ let WebService = WebService_1 = class WebService {
             matched.map(m => {
                 matchedDomains.push({
                     Domains: m.domain,
-                    Gambling: m.gambling === true ? 'YES' : 'NO'
+                    Gambling: m.gambling === true ? 'YES' : 'NO',
+                    Contact: m.contact
                 });
             });
             const unmatched = domains.filter(d => !matched.some(m => d['Domains'].trim().toLowerCase() === m.domain));
