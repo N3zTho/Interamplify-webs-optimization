@@ -111,12 +111,22 @@ export class WebService {
 
                 if (webs.length > 0) {
                     const matchedWeb = webs.map(w => {
-                     const it =   {
+                        let gambling = w['gambling'] == true ? true : false;
+
+                        if (w['webGestores'] && w['webGestores'].length > 0) {
+                            const manager = this.getMinManager(w['webGestores']);
+                            if (manager) {
+                                gambling = manager.gambling == true ? true : false;
+                            }
+                        }
+
+                        const it = {
                             'domain': w['dominio'].toLowerCase(),
-                            'gambling': w['gambling'] == true ? true : false,
+                            'gambling': gambling,
                             'contact': w['tipo_contacto']
                         };
-                     return it;
+
+                        return it;
                     });
 
                     if (matchedWeb.length > 0) {
@@ -161,5 +171,31 @@ export class WebService {
         }
 
         return "error";
+    }
+
+    /**
+     *
+     * Get the manager with the minor price
+     *
+     * @param manager
+     */
+    getMinManager(managers: Array<any>): any {
+        let minPrice = 0;
+        let manager = null;
+
+        managers.map(m => {
+            let price = m.precio;
+            if (m.currency) {
+                if (m.currency.usd > 0) {
+                    price = price * m.currency.usd;
+                }
+            }
+            if (manager === null || price < minPrice) {
+                minPrice = price;
+                manager = m;
+            }
+        });
+
+        return manager;
     }
 }
