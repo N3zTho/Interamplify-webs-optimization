@@ -12,6 +12,7 @@ const web_entity_1 = require("./web.entity");
 const web_gestor_model_1 = require("./models/web-gestor.model");
 const sequelize_1 = require("sequelize");
 const gestor_model_1 = require("../user/models/gestor.model");
+const currency_model_1 = require("../base/models/currency.model");
 let WebRepository = class WebRepository {
     async findAll(params = {}, page = 1, limit = 10) {
         const webs = await web_entity_1.Web.findAll({
@@ -57,26 +58,31 @@ let WebRepository = class WebRepository {
             attributes: ['id', 'dominio', 'gambling', 'tipo_contacto', 'id_gestor'],
             include: [
                 {
-                    model: web_gestor_model_1.WebGestor, attributes: ['gestor_id'], required: true,
+                    model: web_gestor_model_1.WebGestor, attributes: ['gestor_id', 'available', 'gambling', 'precio'], required: true,
                     include: [
                         {
-                            model: gestor_model_1.Gestor, attributes: ['id', 'plataforma'], required: true,
+                            model: gestor_model_1.Gestor, attributes: ['plataforma'], required: true,
                             where: {
                                 plataforma: {
                                     [sequelize_1.Op.eq]: false,
                                 }
                             },
+                        },
+                        {
+                            model: currency_model_1.Currency, attributes: ['usd'], required: true,
                         }
-                    ]
+                    ],
+                    where: {
+                        available: {
+                            [sequelize_1.Op.eq]: 1
+                        }
+                    }
                 },
             ],
             where: {
                 dominio: sequelize_1.default.where(sequelize_1.default.fn('LOWER', sequelize_1.default.col('dominio')), {
                     [sequelize_1.Op.in]: domains
                 }),
-                disponible: {
-                    [sequelize_1.Op.eq]: 1
-                }
             },
             order: [['id', 'ASC']]
         };

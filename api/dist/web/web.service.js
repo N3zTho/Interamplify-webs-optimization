@@ -103,9 +103,16 @@ let WebService = WebService_1 = class WebService {
                     webs.map(w => this.logger.debug(w));
                     if (webs.length > 0) {
                         const matchedWeb = webs.map(w => {
+                            let gambling = w['gambling'] == true ? true : false;
+                            if (w['webGestores'] && w['webGestores'].length > 0) {
+                                const manager = this.getMinManager(w['webGestores']);
+                                if (manager) {
+                                    gambling = manager.gambling == true ? true : false;
+                                }
+                            }
                             const it = {
                                 'domain': w['dominio'].toLowerCase(),
-                                'gambling': w['gambling'] == true ? true : false,
+                                'gambling': gambling,
                                 'contact': w['tipo_contacto']
                             };
                             return it;
@@ -150,6 +157,23 @@ let WebService = WebService_1 = class WebService {
             console.log(e);
         }
         return "error";
+    }
+    getMinManager(managers) {
+        let minPrice = 0;
+        let manager = null;
+        managers.map(m => {
+            let price = m.precio;
+            if (m.currency) {
+                if (m.currency.usd > 0) {
+                    price = price * m.currency.usd;
+                }
+            }
+            if (manager === null || price < minPrice) {
+                minPrice = price;
+                manager = m;
+            }
+        });
+        return manager;
     }
 };
 WebService = WebService_1 = __decorate([

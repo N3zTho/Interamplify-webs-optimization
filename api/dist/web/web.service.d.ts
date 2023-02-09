@@ -9,4 +9,5 @@ export declare class WebService {
     findAll(): Promise<Web[]>;
     duplicates(domains: Array<string>): Promise<string>;
     duplicatesV2(domains: Array<string>): Promise<string>;
+    getMinManager(managers: Array<any>): any;
 }
