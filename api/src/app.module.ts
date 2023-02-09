@@ -7,6 +7,7 @@ import { WebModule } from './web/web.module';
 import { UserModule } from './user/user.module';
 import { ReportModule } from './report/report.module';
 import { UtilsModule } from './utils/utils.module';
+import { BaseModule } from './base/base.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UtilsModule } from './utils/utils.module';
       },
     }),
     DatabaseModule,
+    BaseModule,
     UtilsModule,
     UserModule,
     WebModule,

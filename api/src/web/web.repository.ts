@@ -4,6 +4,7 @@ import { Web } from './web.entity';
 import { WebGestor} from "./models/web-gestor.model";
 import sequelize, {Op} from "sequelize";
 import {Gestor} from "../user/models/gestor.model";
+import {Currency} from "../base/models/currency.model";
 
 @Injectable()
 export class WebRepository {
@@ -69,26 +70,31 @@ export class WebRepository {
       attributes: ['id', 'dominio', 'gambling', 'tipo_contacto', 'id_gestor'],
       include: [
         {
-          model: WebGestor, attributes: ['gestor_id'], required: true,
+          model: WebGestor, attributes: ['gestor_id', 'available', 'gambling', 'precio'], required: true,
           include: [
             {
-              model: Gestor, attributes: ['id', 'plataforma'], required: true,
+              model: Gestor, attributes: ['plataforma'], required: true,
               where: {
                 plataforma: {
                   [Op.eq]: false,
                 }
               },
+            },
+            {
+              model: Currency, attributes: ['usd'], required: true,
             }
-          ]
+          ],
+          where: {
+            available: {
+              [Op.eq] : 1
+            }
+          }
         },
       ],
       where: {
         dominio: sequelize.where(sequelize.fn('LOWER', sequelize.col('dominio')), {
           [Op.in]: domains
         }),
-        disponible: {
-          [Op.eq] : 1
-        }
       },
       order: [['id', 'ASC']]
     };
