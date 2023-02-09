@@ -1,6 +1,7 @@
 import {Table, Column, Model, DataType, CreatedAt, UpdatedAt, ForeignKey, BelongsTo} from 'sequelize-typescript';
 import {Web} from "../web.entity";
 import {Gestor} from "../../user/models/gestor.model";
+import {Currency} from "../../base/models/currency.model";
 
 @Table({
     tableName: "web_gestor"
@@ -41,6 +42,9 @@ export class WebGestor extends Model {
     gambling: boolean;
 
     @Column
+    available: boolean;
+
+    @Column
     comentarios: string;
 
     @CreatedAt
@@ -62,4 +66,7 @@ export class WebGestor extends Model {
 
     @BelongsTo(() => Gestor, { foreignKey: "gestor_id" })
     gestor: Gestor;
+
+    @BelongsTo(() => Currency, { foreignKey: 'divisa', targetKey:'code'})
+    currency: Currency;
 }
