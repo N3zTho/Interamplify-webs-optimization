@@ -24,7 +24,6 @@ let NotificationGateway = class NotificationGateway {
         console.log(data);
     }
     sendMessage(payload) {
-        console.log('notification send');
         this.server.emit("notification", payload);
     }
 };

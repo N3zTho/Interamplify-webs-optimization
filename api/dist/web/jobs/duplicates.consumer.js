@@ -60,19 +60,19 @@ let DuplicatesConsumer = DuplicatesConsumer_1 = class DuplicatesConsumer {
             const report = await this.internalReportService.create(job.data.userId, "DUPLICADOS", msg);
             const user = await this.userService.get(job.data.userId);
             const person = await this.personService.get(job.data.personId);
-            this.logger.debug('Sending notification');
-            const notification = {
-                title: "Dominios duplicados",
-                text: "Proceso terminado con exito.",
-                to: [job.data.userId],
-                store: false,
-                link: `job/report-intern/${report.id}`,
-                btnText: "Ver Detalles",
-                type: "success",
-            };
-            await this.notificationService.send(notification);
-            this.logger.debug('Sending email');
             if (user && person) {
+                this.logger.debug('Sending notification');
+                const notification = {
+                    title: "Dominios duplicados",
+                    text: "Proceso terminado con exito.",
+                    to: [Number(user.id)],
+                    store: false,
+                    link: `job/report-intern/${report.id}`,
+                    btnText: "Ver Detalles",
+                    type: "success",
+                };
+                await this.notificationService.send(notification);
+                this.logger.debug('Sending email');
                 const mailOptions = {
                     template: "duplicates",
                     file_url: cloudStorageUrl,
