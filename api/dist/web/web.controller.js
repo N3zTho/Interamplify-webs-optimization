@@ -20,15 +20,33 @@ const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
 const file_upload_1 = require("./../utils/file-upload");
 const web_service_1 = require("./web.service");
+const notification_service_1 = require("../base/services/notification.service");
+const user_service_1 = require("../user/user.service");
 let WebController = WebController_1 = class WebController {
-    constructor(webService, domainDuplicatesQueue) {
+    constructor(webService, domainDuplicatesQueue, userService, notificationService) {
         this.webService = webService;
         this.domainDuplicatesQueue = domainDuplicatesQueue;
+        this.userService = userService;
+        this.notificationService = notificationService;
         this.logger = new common_1.Logger(WebController_1.name);
     }
     async findAll() {
         const webs = await this.webService.findAll();
         return webs;
+    }
+    async sendMessage() {
+        const user = await this.userService.getByUuid("ec814ae2-7d1e-4641-9a6c-1d227207cdad");
+        const id = Number(user.id);
+        const notification = {
+            title: "Dominios duplicados",
+            text: "Proceso terminado con exito.",
+            to: [id],
+            store: false,
+            btnText: "Ver Detalles",
+            type: "success",
+        };
+        await this.notificationService.send(notification);
+        return true;
     }
     async duplicates(file, request) {
         try {
@@ -54,6 +72,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], WebController.prototype, "findAll", null);
 __decorate([
+    common_1.Get('/message'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], WebController.prototype, "sendMessage", null);
+__decorate([
     common_1.Post('/duplicates'),
     common_1.UseInterceptors(platform_express_1.FileInterceptor('file', {
         storage: multer_1.diskStorage({
@@ -70,7 +94,8 @@ __decorate([
 WebController = WebController_1 = __decorate([
     common_1.Controller('webs'),
     __param(1, bull_1.InjectQueue('domainDuplicates')),
-    __metadata("design:paramtypes", [web_service_1.WebService, Object])
+    __metadata("design:paramtypes", [web_service_1.WebService, Object, user_service_1.UserService,
+        notification_service_1.NotificationService])
 ], WebController);
 exports.WebController = WebController;
 //# sourceMappingURL=web.controller.js.map
