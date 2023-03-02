@@ -18,4 +18,14 @@ export class UserRepository {
 
         return user;
     }
+
+    async findByUuid(uuid: string): Promise<User> {
+        const user = await User.findOne({
+            where: {
+                uuid: uuid,
+            }
+        });
+
+        return user;
+    }
 }

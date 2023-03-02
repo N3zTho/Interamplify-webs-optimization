@@ -19,6 +19,12 @@ export class User extends Model {
     avatar: string;
 
     @Column({
+        type: DataType.STRING(36),
+        allowNull: false,
+    })
+    uuid: string;
+
+    @Column({
         type: DataType.STRING(255),
         allowNull: false,
     })

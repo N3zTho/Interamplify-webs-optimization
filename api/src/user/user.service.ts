@@ -13,4 +13,10 @@ export class UserService {
         return user;
     }
 
+    async getByUuid(uuid: string): Promise<User> {
+        const user: User = await this.userRepository.findByUuid(uuid);
+
+        return user;
+    }
+
 }
