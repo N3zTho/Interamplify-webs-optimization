@@ -9,6 +9,8 @@ import {UserService} from "../../user/user.service";
 import {PersonService} from "../../user/person.service";
 import {InternalReportService} from "../../report/services/internal-report.service";
 import * as fs from 'fs';
+import {NotificationService} from "../../base/services/notification.service";
+import {NotificationDto} from "../../base/dto/notification.dto";
 
 @Processor('domainDuplicates')
 export class DuplicatesConsumer {
@@ -20,6 +22,7 @@ export class DuplicatesConsumer {
     private readonly userService: UserService,
     private readonly personService: PersonService,
     private readonly internalReportService: InternalReportService,
+    private readonly notificationService: NotificationService
   ) {}
 
   private readonly logger = new Logger(DuplicatesConsumer.name);
@@ -54,7 +57,7 @@ export class DuplicatesConsumer {
 
             this.logger.debug('Creating report');
             const msg = `El fichero de duplicados está disponible en <a href="${cloudStorageUrl}" class="text-secondary" target="_blank">${cloudStorageUrl}</a>`;
-            await this.internalReportService.create(job.data.userId, "DUPLICADOS", msg);
+            const report = await this.internalReportService.create(job.data.userId, "DUPLICADOS", msg);
 
             const user = await this.userService.get(job.data.userId);
             const person = await this.personService.get(job.data.personId);
@@ -76,6 +79,19 @@ export class DuplicatesConsumer {
 
                 await this.emailService.sendEmail(mailOptions);
             }
+
+            const notification: NotificationDto = {
+                title: "Dominios duplicados",
+                text: "Proceso terminado con exito.",
+                to: [job.data.userId],
+                store: false,
+                link: `job/report-intern/${report.id}`,
+                btnText: "Ver Detalles",
+                type: "success",
+            };
+
+            await this.notificationService.send(notification);
+
         } catch (e) {
             this.logger.debug(`Error on duplicates job: ${e}`);
         }
