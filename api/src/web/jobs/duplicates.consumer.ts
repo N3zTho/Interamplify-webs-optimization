@@ -62,6 +62,20 @@ export class DuplicatesConsumer {
             const user = await this.userService.get(job.data.userId);
             const person = await this.personService.get(job.data.personId);
 
+            this.logger.debug('Sending notification');
+
+            const notification: NotificationDto = {
+                title: "Dominios duplicados",
+                text: "Proceso terminado con exito.",
+                to: [job.data.userId],
+                store: false,
+                link: `job/report-intern/${report.id}`,
+                btnText: "Ver Detalles",
+                type: "success",
+            };
+
+            await this.notificationService.send(notification);
+
             this.logger.debug('Sending email');
 
             if (user && person) {
@@ -79,18 +93,6 @@ export class DuplicatesConsumer {
 
                 await this.emailService.sendEmail(mailOptions);
             }
-
-            const notification: NotificationDto = {
-                title: "Dominios duplicados",
-                text: "Proceso terminado con exito.",
-                to: [job.data.userId],
-                store: false,
-                link: `job/report-intern/${report.id}`,
-                btnText: "Ver Detalles",
-                type: "success",
-            };
-
-            await this.notificationService.send(notification);
 
         } catch (e) {
             this.logger.debug(`Error on duplicates job: ${e}`);

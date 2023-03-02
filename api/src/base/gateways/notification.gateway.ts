@@ -30,6 +30,7 @@ export class NotificationGateway implements OnGatewayConnection {
     }
 
     sendMessage(payload: any) {
+        console.log('notification send');
         this.server.emit("notification", payload);
     }
 }
