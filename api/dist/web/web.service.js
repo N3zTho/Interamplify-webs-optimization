@@ -8,6 +8,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
+var WebService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebService = void 0;
 const common_1 = require("@nestjs/common");
@@ -15,10 +23,11 @@ const XLSX = require("xlsx");
 const path = require("path");
 const web_repository_1 = require("./web.repository");
 const gestor_service_1 = require("../user/services/gestor.service");
-let WebService = class WebService {
+let WebService = WebService_1 = class WebService {
     constructor(webRepository, gestorService) {
         this.webRepository = webRepository;
         this.gestorService = gestorService;
+        this.logger = new common_1.Logger(WebService_1.name);
     }
     async findAll() {
         const webs = await this.webRepository.findAll();
@@ -34,13 +43,13 @@ let WebService = class WebService {
             const order = [['dominio', 'ASC']];
             let matched = [];
             let page = 1;
-            const limit = 500;
+            const limit = 1000;
             let flag = true;
             domains.sort();
             while (flag) {
                 const webs = await this.webRepository.findWebsForDuplicates(page, limit, order);
                 if (webs.length > 0) {
-                    const matchedWeb = domains.filter(d => webs.some(w => d['Domains'].toLowerCase() === w['dominio'].toLowerCase() &&
+                    const matchedWeb = domains.filter(d => webs.some(w => d['Domains'] && w['dominio'] && d['Domains'].trim().toLowerCase() === w['dominio'].toLowerCase() &&
                         (gestoresId.includes(w['id_gestor']) ||
                             w['webGestores'].some(wg => gestoresId.includes(wg.gestor_id)))));
                     if (matchedWeb.length > 0) {
@@ -76,8 +85,98 @@ let WebService = class WebService {
         }
         return "error";
     }
+    async duplicatesV2(domains) {
+        var e_1, _a;
+        try {
+            const matched = [];
+            domains.sort();
+            const chunkSize = 20;
+            const groups = domains.map((e, i) => {
+                return i % chunkSize === 0 ? domains.slice(i, i + chunkSize) : null;
+            }).filter(e => { return e; });
+            try {
+                for (var groups_1 = __asyncValues(groups), groups_1_1; groups_1_1 = await groups_1.next(), !groups_1_1.done;) {
+                    const it = groups_1_1.value;
+                    this.logger.debug(`Processing ${it.length} domains`);
+                    const domainList = it.map(d => d['Domains'].trim().toLowerCase());
+                    const webs = await this.webRepository.findWebsForDuplicatesV2(domainList);
+                    webs.map(w => this.logger.debug(w));
+                    if (webs.length > 0) {
+                        const matchedWeb = webs.map(w => {
+                            let gambling = w['gambling'] == true ? true : false;
+                            if (w['webGestores'] && w['webGestores'].length > 0) {
+                                const manager = this.getMinManager(w['webGestores']);
+                                if (manager) {
+                                    gambling = manager.gambling == true ? true : false;
+                                }
+                            }
+                            const it = {
+                                'domain': w['dominio'].toLowerCase(),
+                                'gambling': gambling,
+                                'contact': w['tipo_contacto']
+                            };
+                            return it;
+                        });
+                        if (matchedWeb.length > 0) {
+                            matched.push(...matchedWeb);
+                        }
+                    }
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (groups_1_1 && !groups_1_1.done && (_a = groups_1.return)) await _a.call(groups_1);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+            const matchedDomains = [];
+            const unmatchedDomains = [["Domains"]];
+            matched.map(m => {
+                matchedDomains.push({
+                    Domains: m.domain,
+                    Gambling: m.gambling === true ? 'YES' : 'NO',
+                    Contact: m.contact
+                });
+            });
+            const unmatched = domains.filter(d => !matched.some(m => d['Domains'].trim().toLowerCase() === m.domain));
+            unmatched.map(um => {
+                unmatchedDomains.push([um['Domains']]);
+            });
+            const wb = XLSX.utils.book_new();
+            const matchedWS = XLSX.utils.json_to_sheet(matchedDomains);
+            XLSX.utils.book_append_sheet(wb, matchedWS, 'Matched Domains');
+            const unmatchedWS = XLSX.utils.aoa_to_sheet(unmatchedDomains);
+            XLSX.utils.book_append_sheet(wb, unmatchedWS, 'Unmatched Domains');
+            const uniqueSuffix = `duplicates-${Date.now()}-${Math.round(Math.random() * 1e9)}.xlsx`;
+            const fileName = path.resolve(__dirname, '../../', './public', uniqueSuffix);
+            XLSX.writeFile(wb, fileName);
+            return fileName;
+        }
+        catch (e) {
+            console.log(e);
+        }
+        return "error";
+    }
+    getMinManager(managers) {
+        let minPrice = 0;
+        let manager = null;
+        managers.map(m => {
+            let price = m.precio;
+            if (m.currency) {
+                if (m.currency.usd > 0) {
+                    price = price * m.currency.usd;
+                }
+            }
+            if (manager === null || price < minPrice) {
+                minPrice = price;
+                manager = m;
+            }
+        });
+        return manager;
+    }
 };
-WebService = __decorate([
+WebService = WebService_1 = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [web_repository_1.WebRepository, gestor_service_1.GestorService])
 ], WebService);

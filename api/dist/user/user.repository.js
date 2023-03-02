@@ -21,6 +21,14 @@ let UserRepository = class UserRepository {
         const user = await user_entity_1.User.findByPk(id);
         return user;
     }
+    async findByUuid(uuid) {
+        const user = await user_entity_1.User.findOne({
+            where: {
+                uuid: uuid,
+            }
+        });
+        return user;
+    }
 };
 UserRepository = __decorate([
     common_1.Injectable()

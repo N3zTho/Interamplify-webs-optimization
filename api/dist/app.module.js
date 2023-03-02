@@ -16,6 +16,7 @@ const web_module_1 = require("./web/web.module");
 const user_module_1 = require("./user/user.module");
 const report_module_1 = require("./report/report.module");
 const utils_module_1 = require("./utils/utils.module");
+const base_module_1 = require("./base/base.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -37,6 +38,7 @@ AppModule = __decorate([
                 },
             }),
             database_module_1.DatabaseModule,
+            base_module_1.BaseModule,
             utils_module_1.UtilsModule,
             user_module_1.UserModule,
             web_module_1.WebModule,

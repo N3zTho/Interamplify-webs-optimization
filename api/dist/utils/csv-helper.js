@@ -18,6 +18,8 @@ const common_1 = require("@nestjs/common");
 const csv = require("csv-parser");
 const fs = require("fs");
 const path = require("path");
+const fs_1 = require("fs");
+const papaparse_1 = require("papaparse");
 let CsvHelperService = class CsvHelperService {
     async parse(file, options = {}) {
         var e_1, _a;
@@ -44,6 +46,28 @@ let CsvHelperService = class CsvHelperService {
             console.log(e);
         }
         return result;
+    }
+    async parsev2(file, options = {}) {
+        try {
+            const stream = fs_1.readFileSync(path.resolve(__dirname, '../../', './public', file));
+            const data = stream.toString("utf8");
+            const resultData = await papaparse_1.parse(data, {
+                quotes: false,
+                quoteChar: '"',
+                escapeChar: '"',
+                delimiter: ",",
+                header: true,
+                skipEmptyLines: true,
+                transformHeader: (header) => header.trim()
+            });
+            if (resultData.data) {
+                return resultData.data;
+            }
+        }
+        catch (e) {
+            console.log(e);
+        }
+        return [];
     }
 };
 CsvHelperService = __decorate([

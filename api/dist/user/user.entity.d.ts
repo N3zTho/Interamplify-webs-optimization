@@ -2,6 +2,7 @@ import { Model } from 'sequelize-typescript';
 export declare class User extends Model {
     id: bigint;
     avatar: string;
+    uuid: string;
     login: string;
     password: string;
     roles: string;

@@ -9,25 +9,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
+exports.NotificationService = void 0;
 const common_1 = require("@nestjs/common");
-const user_repository_1 = require("./user.repository");
-let UserService = class UserService {
-    constructor(userRepository) {
-        this.userRepository = userRepository;
+const notification_gateway_1 = require("../gateways/notification.gateway");
+let NotificationService = class NotificationService {
+    constructor(notificationGateway) {
+        this.notificationGateway = notificationGateway;
     }
-    async get(id) {
-        const user = await this.userRepository.findById(id);
-        return user;
-    }
-    async getByUuid(uuid) {
-        const user = await this.userRepository.findByUuid(uuid);
-        return user;
+    async send(notification) {
+        this.notificationGateway.sendMessage(notification);
     }
 };
-UserService = __decorate([
+NotificationService = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [user_repository_1.UserRepository])
-], UserService);
-exports.UserService = UserService;
-//# sourceMappingURL=user.service.js.map
+    __metadata("design:paramtypes", [notification_gateway_1.NotificationGateway])
+], NotificationService);
+exports.NotificationService = NotificationService;
+//# sourceMappingURL=notification.service.js.map

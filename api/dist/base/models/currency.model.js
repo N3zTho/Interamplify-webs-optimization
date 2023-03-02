@@ -9,9 +9,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.Currency = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
-let User = class User extends sequelize_typescript_1.Model {
+let Currency = class Currency extends sequelize_typescript_1.Model {
 };
 __decorate([
     sequelize_typescript_1.Column({
@@ -21,80 +21,76 @@ __decorate([
         allowNull: false,
     }),
     __metadata("design:type", typeof BigInt === "function" ? BigInt : Object)
-], User.prototype, "id", void 0);
+], Currency.prototype, "id", void 0);
 __decorate([
     sequelize_typescript_1.Column({
         type: sequelize_typescript_1.DataType.STRING,
         allowNull: false,
     }),
     __metadata("design:type", String)
-], User.prototype, "avatar", void 0);
+], Currency.prototype, "name", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.STRING(36),
+        type: sequelize_typescript_1.DataType.STRING(3),
         allowNull: false,
     }),
     __metadata("design:type", String)
-], User.prototype, "uuid", void 0);
+], Currency.prototype, "code", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.STRING(255),
+        type: sequelize_typescript_1.DataType.STRING(5),
         allowNull: false,
     }),
     __metadata("design:type", String)
-], User.prototype, "login", void 0);
+], Currency.prototype, "symbol", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.STRING,
-        allowNull: false,
+        type: sequelize_typescript_1.DataType.DECIMAL(8, 5),
     }),
-    __metadata("design:type", String)
-], User.prototype, "password", void 0);
+    __metadata("design:type", Number)
+], Currency.prototype, "usd", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.STRING(255),
-        allowNull: false,
+        type: sequelize_typescript_1.DataType.DECIMAL(8, 5),
     }),
-    __metadata("design:type", String)
-], User.prototype, "roles", void 0);
+    __metadata("design:type", Number)
+], Currency.prototype, "usd_before", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.STRING(120),
+        type: sequelize_typescript_1.DataType.DECIMAL(8, 5),
     }),
-    __metadata("design:type", String)
-], User.prototype, "email", void 0);
+    __metadata("design:type", Number)
+], Currency.prototype, "eur", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.BOOLEAN,
+        type: sequelize_typescript_1.DataType.DECIMAL(8, 5),
     }),
-    __metadata("design:type", Boolean)
-], User.prototype, "active", void 0);
+    __metadata("design:type", Number)
+], Currency.prototype, "eur_before", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.BOOLEAN,
+        type: sequelize_typescript_1.DataType.DECIMAL(8, 5),
     }),
-    __metadata("design:type", Boolean)
-], User.prototype, "notificado", void 0);
+    __metadata("design:type", Number)
+], Currency.prototype, "gbp", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.BOOLEAN,
-        allowNull: false,
+        type: sequelize_typescript_1.DataType.DECIMAL(8, 5),
     }),
-    __metadata("design:type", Boolean)
-], User.prototype, "msg_welcome", void 0);
+    __metadata("design:type", Number)
+], Currency.prototype, "gbp_before", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.BOOLEAN,
-        allowNull: false,
+        type: sequelize_typescript_1.DataType.DECIMAL(8, 5),
     }),
-    __metadata("design:type", Boolean)
-], User.prototype, "msg_welcome_selfservice", void 0);
+    __metadata("design:type", Number)
+], Currency.prototype, "mxn", void 0);
 __decorate([
     sequelize_typescript_1.Column({
-        type: sequelize_typescript_1.DataType.BIGINT.UNSIGNED,
+        type: sequelize_typescript_1.DataType.DECIMAL(8, 5),
     }),
-    __metadata("design:type", typeof BigInt === "function" ? BigInt : Object)
-], User.prototype, "account_type_id", void 0);
+    __metadata("design:type", Number)
+], Currency.prototype, "mxn_before", void 0);
 __decorate([
     sequelize_typescript_1.CreatedAt,
     sequelize_typescript_1.Column({
@@ -102,7 +98,7 @@ __decorate([
         type: sequelize_typescript_1.DataType.DATE
     }),
     __metadata("design:type", Date)
-], User.prototype, "createdAt", void 0);
+], Currency.prototype, "createdAt", void 0);
 __decorate([
     sequelize_typescript_1.UpdatedAt,
     sequelize_typescript_1.Column({
@@ -110,11 +106,11 @@ __decorate([
         type: sequelize_typescript_1.DataType.DATE
     }),
     __metadata("design:type", Date)
-], User.prototype, "updatedAt", void 0);
-User = __decorate([
+], Currency.prototype, "updatedAt", void 0);
+Currency = __decorate([
     sequelize_typescript_1.Table({
-        tableName: "usuario"
+        tableName: "divisa"
     })
-], User);
-exports.User = User;
-//# sourceMappingURL=user.entity.js.map
+], Currency);
+exports.Currency = Currency;
+//# sourceMappingURL=currency.model.js.map
