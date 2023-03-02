@@ -6,6 +6,7 @@ import { EmailService } from '../../utils/email.service';
 import { UserService } from "../../user/user.service";
 import { PersonService } from "../../user/person.service";
 import { InternalReportService } from "../../report/services/internal-report.service";
+import { NotificationService } from "../../base/services/notification.service";
 export declare class DuplicatesConsumer {
     private readonly csvParser;
     private readonly webService;
@@ -14,7 +15,8 @@ export declare class DuplicatesConsumer {
     private readonly userService;
     private readonly personService;
     private readonly internalReportService;
-    constructor(csvParser: CsvHelperService, webService: WebService, cloudStorageService: CloudStorageService, emailService: EmailService, userService: UserService, personService: PersonService, internalReportService: InternalReportService);
+    private readonly notificationService;
+    constructor(csvParser: CsvHelperService, webService: WebService, cloudStorageService: CloudStorageService, emailService: EmailService, userService: UserService, personService: PersonService, internalReportService: InternalReportService, notificationService: NotificationService);
     private readonly logger;
     checkDuplicates(job: Job): Promise<void>;
 }

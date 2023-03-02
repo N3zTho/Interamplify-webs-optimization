@@ -31,6 +31,13 @@ __decorate([
 ], User.prototype, "avatar", void 0);
 __decorate([
     sequelize_typescript_1.Column({
+        type: sequelize_typescript_1.DataType.STRING(36),
+        allowNull: false,
+    }),
+    __metadata("design:type", String)
+], User.prototype, "uuid", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
         type: sequelize_typescript_1.DataType.STRING(255),
         allowNull: false,
     }),

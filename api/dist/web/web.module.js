@@ -14,6 +14,7 @@ const web_repository_1 = require("./web.repository");
 const web_controller_1 = require("./web.controller");
 const duplicates_consumer_1 = require("./jobs/duplicates.consumer");
 const report_module_1 = require("../report/report.module");
+const base_module_1 = require("../base/base.module");
 let WebModule = class WebModule {
 };
 WebModule = __decorate([
@@ -22,7 +23,8 @@ WebModule = __decorate([
             bull_1.BullModule.registerQueue({
                 name: 'domainDuplicates',
             }),
-            report_module_1.ReportModule
+            report_module_1.ReportModule,
+            base_module_1.BaseModule
         ],
         exports: [web_service_1.WebService],
         controllers: [web_controller_1.WebController],
