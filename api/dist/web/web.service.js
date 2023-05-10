@@ -168,7 +168,9 @@ let WebService = WebService_1 = class WebService {
                     price = price * m.currency.usd;
                 }
             }
-            if (manager === null || price < minPrice) {
+            if (manager === null ||
+                (price < minPrice && (m.gambling == true || manager.gambling == false)) ||
+                (m.gambling == true && manager.gambling == false)) {
                 minPrice = price;
                 manager = m;
             }
