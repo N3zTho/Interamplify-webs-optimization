@@ -90,7 +90,7 @@ let WebService = WebService_1 = class WebService {
         try {
             const matched = [];
             domains.sort();
-            const chunkSize = 20;
+            const chunkSize = 40;
             const groups = domains.map((e, i) => {
                 return i % chunkSize === 0 ? domains.slice(i, i + chunkSize) : null;
             }).filter(e => { return e; });
