@@ -34,14 +34,13 @@ let EmailService = EmailService_1 = class EmailService {
                 data.message = mailOptions.message;
             }
             if (mailOptions.file_url) {
-                data.file_url = '{{file_url}}';
+                data.file_url = mailOptions.file_url;
             }
             this.logger.log(`Sending email to: ${mailOptions.to_email}`);
-            let htmlPart = await this.templateService.getTemplate(template, data);
-            htmlPart = htmlPart.replace('{{file_url}}', mailOptions.file_url ? mailOptions.file_url : '');
+            const htmlPart = await this.templateService.getTemplate(template, data);
             const mailerClient = await this.getMailerClient();
             let textPart = mailOptions.alternative_message;
-            const result = await mailerClient.post("send", { version: "v3.1" }).request({
+            await mailerClient.post("send", { version: "v3.1" }).request({
                 "Messages": [{
                         "From": {
                             "Email": mailOptions.from,
@@ -53,7 +52,8 @@ let EmailService = EmailService_1 = class EmailService {
                             }],
                         "Subject": mailOptions.subject,
                         "TextPart": textPart,
-                        "HTMLPart": htmlPart
+                        "HTMLPart": htmlPart,
+                        "TemplateLanguage": true
                     }]
             });
             return true;
