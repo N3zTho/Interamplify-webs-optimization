@@ -33,11 +33,9 @@ let EmailService = EmailService_1 = class EmailService {
             if (mailOptions.message) {
                 data.message = mailOptions.message;
             }
-            if (mailOptions.file_url) {
-                data.file_url = mailOptions.file_url;
-            }
             this.logger.log(`Sending email to: ${mailOptions.to_email}`);
-            const htmlPart = await this.templateService.getTemplate(template, data);
+            let htmlPart = await this.templateService.getTemplate(template, data);
+            htmlPart = htmlPart.replace('{{file_url}}', mailOptions.file_url ? mailOptions.file_url : '');
             const mailerClient = await this.getMailerClient();
             let textPart = mailOptions.alternative_message;
             const result = await mailerClient.post("send", { version: "v3.1" }).request({
