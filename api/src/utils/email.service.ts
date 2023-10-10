@@ -26,7 +26,7 @@ export class EmailService {
                 data.message = mailOptions.message;
             }
             if (mailOptions.file_url) {
-                data.file_url = encodeURIComponent(mailOptions.file_url);
+                data.file_url = mailOptions.file_url;
             }
 
             this.logger.log(`Sending email to: ${mailOptions.to_email}`);
