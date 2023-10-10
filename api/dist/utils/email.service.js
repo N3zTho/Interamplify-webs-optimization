@@ -34,7 +34,7 @@ let EmailService = EmailService_1 = class EmailService {
                 data.message = mailOptions.message;
             }
             if (mailOptions.file_url) {
-                data.file_url = mailOptions.file_url;
+                data.file_url = encodeURI(mailOptions.file_url);
             }
             this.logger.log(`Sending email to: ${mailOptions.to_email}`);
             const htmlPart = await this.templateService.getTemplate(template, data);
