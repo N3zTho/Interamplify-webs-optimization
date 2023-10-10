@@ -25,9 +25,9 @@ export class EmailService {
             if (mailOptions.message) {
                 data.message = mailOptions.message;
             }
-            // if (mailOptions.file_url) {
-            //     data.file_url = '{{file_url}}';
-            // }
+            if (mailOptions.file_url) {
+                data.file_url = '{{file_url}}';
+            }
 
             this.logger.log(`Sending email to: ${mailOptions.to_email}`);
 
