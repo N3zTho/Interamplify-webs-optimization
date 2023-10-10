@@ -33,6 +33,9 @@ let EmailService = EmailService_1 = class EmailService {
             if (mailOptions.message) {
                 data.message = mailOptions.message;
             }
+            if (mailOptions.file_url) {
+                data.file_url = '{{file_url}}';
+            }
             this.logger.log(`Sending email to: ${mailOptions.to_email}`);
             let htmlPart = await this.templateService.getTemplate(template, data);
             htmlPart = htmlPart.replace('{{file_url}}', mailOptions.file_url ? mailOptions.file_url : '');
