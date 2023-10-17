@@ -46,7 +46,7 @@ export class SlackService {
                     },
                 });
 
-                if (result?.status == 200) {
+                if (result?.data?.ok == true) {
                     this.logger.debug(`The message was sent to Slack`);
                 } else {
                     this.logger.debug(`Could not send message to Slack`);
