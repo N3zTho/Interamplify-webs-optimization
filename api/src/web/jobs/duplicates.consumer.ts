@@ -10,6 +10,7 @@ import {PersonService} from "../../user/person.service";
 import {InternalReportService} from "../../report/services/internal-report.service";
 import * as fs from 'fs';
 import {NotificationService} from "../../base/services/notification.service";
+import {SlackService} from "../../base/services/slack.service";
 import {NotificationDto} from "../../base/dto/notification.dto";
 
 @Processor('domainDuplicates')
@@ -22,7 +23,8 @@ export class DuplicatesConsumer {
     private readonly userService: UserService,
     private readonly personService: PersonService,
     private readonly internalReportService: InternalReportService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly slackService: SlackService
   ) {}
 
   private readonly logger = new Logger(DuplicatesConsumer.name);
@@ -74,19 +76,27 @@ export class DuplicatesConsumer {
 
                 this.logger.debug('Sending email');
 
+                const reportUrl = `${process.env.INTERAMPLIFY_APP_URL}/job/report-intern/${report.id}`;
+
                 const mailOptions = {
                     template: "duplicates",
-                    file_url: cloudStorageUrl,
+                    file_url: reportUrl,
                     from: process.env.MJ_EMAIL_SENDER,
                     name: 'Interamplify',
                     to_name: `${person.nombre} ${person.apellidos}`,
                     to_email: user.email,
                     subject: 'Dominios duplicados',
-                    message: 'Este mensaje es para notificarle que el fichero de duplicados ya está disponible.',
-                    alternative_message: `Este mensaje es para notificarle que el fichero de duplicados ya está disponible <a href="${cloudStorageUrl}">Descargar</a>`
+                    message: 'Este mensaje es para notificarle que el proceso de comprobar duplicados ha terminado.',
+                    alternative_message: `Este mensaje es para notificarle que el proceso de comprobar duplicados ha terminado. Puede ver el informe en este <a href="${reportUrl}">enlace</a>`
                 };
 
                 await this.emailService.sendEmail(mailOptions);
+
+                const messages: Array<string> = [];
+                messages.push(`Hola ${person.nombre},`);
+                messages.push(`El proceso de duplicados ha concluido. El fichero está disponible en ${cloudStorageUrl}`);
+
+                await this.slackService.sendMessage(user.id, messages);
             }
 
         } catch (e) {
