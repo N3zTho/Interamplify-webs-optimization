@@ -20,6 +20,7 @@ let SlackService = SlackService_1 = class SlackService {
         this.logger = new common_1.Logger(SlackService_1.name);
     }
     async sendMessage(userId, messages) {
+        var _a;
         console.log(userId);
         try {
             this.logger.debug(`Getting Slack configuration`);
@@ -31,21 +32,20 @@ let SlackService = SlackService_1 = class SlackService {
                     blocks: []
                 };
                 messages.map(m => {
-                    body.blocks.push(`{
-                    "type" : "section",
-                    "text" : {
-                        "type" : "mrkdwn",
-                        "text" : "${m}",
-                    },
-                }`);
+                    body.blocks.push({
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": `${m}`,
+                        },
+                    });
                 });
                 const result = await axios_1.default.post('https://slack.com/api/chat.postMessage', body, {
                     headers: {
                         Authorization: `Bearer ${process.env.SLACK_BOT_USER}`,
                     },
                 });
-                console.log(result);
-                if ((result === null || result === void 0 ? void 0 : result.status) == 200) {
+                if (((_a = result === null || result === void 0 ? void 0 : result.data) === null || _a === void 0 ? void 0 : _a.ok) == true) {
                     this.logger.debug(`The message was sent to Slack`);
                 }
                 else {
