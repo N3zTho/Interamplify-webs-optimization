@@ -31,6 +31,7 @@
     "@nestjs/typeorm": "^8.0.1",
     "@nestjs/websockets": "^8.0.0",
     "aws-sdk": "^2.948.0",
+    "axios": "^1.5.1",
     "bull": "^3.23.0",
     "csv-parser": "^3.0.0",
     "dotenv": "^8.6.0",

@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import { databaseConfig } from './database.config';
 import {Currency} from "../../base/models/currency.model";
+import {Configuration} from "../../base/models/configuration.model";
 import { Web } from '../../web/web.entity';
 import { WebGestor} from "../../web/models/web-gestor.model";
 import { User } from '../../user/user.entity';
@@ -32,7 +33,7 @@ export const databaseProviders = [
           config = databaseConfig.development;
       }
       const sequelize = new Sequelize(config);
-      sequelize.addModels([Currency, Web, WebGestor, User, Person, Gestor, InternalReport]);
+      sequelize.addModels([Currency, Configuration, Web, WebGestor, User, Person, Gestor, InternalReport]);
 
       return sequelize;
     },
