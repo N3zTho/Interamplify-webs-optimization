@@ -22,8 +22,9 @@ const person_service_1 = require("../../user/person.service");
 const internal_report_service_1 = require("../../report/services/internal-report.service");
 const fs = require("fs");
 const notification_service_1 = require("../../base/services/notification.service");
+const slack_service_1 = require("../../base/services/slack.service");
 let DuplicatesConsumer = DuplicatesConsumer_1 = class DuplicatesConsumer {
-    constructor(csvParser, webService, cloudStorageService, emailService, userService, personService, internalReportService, notificationService) {
+    constructor(csvParser, webService, cloudStorageService, emailService, userService, personService, internalReportService, notificationService, slackService) {
         this.csvParser = csvParser;
         this.webService = webService;
         this.cloudStorageService = cloudStorageService;
@@ -32,6 +33,7 @@ let DuplicatesConsumer = DuplicatesConsumer_1 = class DuplicatesConsumer {
         this.personService = personService;
         this.internalReportService = internalReportService;
         this.notificationService = notificationService;
+        this.slackService = slackService;
         this.logger = new common_1.Logger(DuplicatesConsumer_1.name);
     }
     async checkDuplicates(job) {
@@ -67,18 +69,23 @@ let DuplicatesConsumer = DuplicatesConsumer_1 = class DuplicatesConsumer {
                 };
                 await this.notificationService.send(notification);
                 this.logger.debug('Sending email');
+                const reportUrl = `${process.env.INTERAMPLIFY_APP_URL}/job/report-intern/${report.id}`;
                 const mailOptions = {
                     template: "duplicates",
-                    file_url: cloudStorageUrl,
+                    file_url: reportUrl,
                     from: process.env.MJ_EMAIL_SENDER,
                     name: 'Interamplify',
                     to_name: `${person.nombre} ${person.apellidos}`,
                     to_email: user.email,
                     subject: 'Dominios duplicados',
-                    message: 'Este mensaje es para notificarle que el fichero de duplicados ya está disponible.',
-                    alternative_message: `Este mensaje es para notificarle que el fichero de duplicados ya está disponible <a href="${cloudStorageUrl}">Descargar</a>`
+                    message: 'Este mensaje es para notificarle que el proceso de comprobar duplicados ha terminado.',
+                    alternative_message: `Este mensaje es para notificarle que el proceso de comprobar duplicados ha terminado. Puede ver el informe en este <a href="${reportUrl}">enlace</a>`
                 };
                 await this.emailService.sendEmail(mailOptions);
+                const messages = [];
+                messages.push(`Hola ${person.nombre},`);
+                messages.push(`El proceso de duplicados ha concluido. El fichero está disponible en ${cloudStorageUrl}`);
+                await this.slackService.sendMessage(user.id, messages);
             }
         }
         catch (e) {
@@ -102,7 +109,8 @@ DuplicatesConsumer = DuplicatesConsumer_1 = __decorate([
         user_service_1.UserService,
         person_service_1.PersonService,
         internal_report_service_1.InternalReportService,
-        notification_service_1.NotificationService])
+        notification_service_1.NotificationService,
+        slack_service_1.SlackService])
 ], DuplicatesConsumer);
 exports.DuplicatesConsumer = DuplicatesConsumer;
 //# sourceMappingURL=duplicates.consumer.js.map

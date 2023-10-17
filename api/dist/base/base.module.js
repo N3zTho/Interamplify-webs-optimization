@@ -10,15 +10,18 @@ exports.BaseModule = void 0;
 const common_1 = require("@nestjs/common");
 const notification_gateway_1 = require("./gateways/notification.gateway");
 const notification_service_1 = require("./services/notification.service");
+const configuration_service_1 = require("./services/configuration.service");
+const slack_service_1 = require("./services/slack.service");
+const configuration_repository_1 = require("./repositories/configuration.repository");
 let BaseModule = class BaseModule {
 };
 BaseModule = __decorate([
     common_1.Global(),
     common_1.Module({
         imports: [],
-        exports: [notification_service_1.NotificationService],
+        exports: [notification_service_1.NotificationService, configuration_service_1.ConfigurationService, slack_service_1.SlackService],
         controllers: [],
-        providers: [notification_gateway_1.NotificationGateway, notification_service_1.NotificationService],
+        providers: [notification_gateway_1.NotificationGateway, notification_service_1.NotificationService, configuration_service_1.ConfigurationService, slack_service_1.SlackService, configuration_repository_1.ConfigurationRepository],
     })
 ], BaseModule);
 exports.BaseModule = BaseModule;
