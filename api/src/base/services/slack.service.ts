@@ -46,8 +46,6 @@ export class SlackService {
                     },
                 });
 
-                console.log(result);
-
                 if (result?.status == 200) {
                     this.logger.debug(`The message was sent to Slack`);
                 } else {
