@@ -31,13 +31,13 @@ export class SlackService {
                     blocks: []
                 };
                 messages.map(m => {
-                    body.blocks.push(`{
-                    "type" : "section",
-                    "text" : {
-                        "type" : "mrkdwn",
-                        "text" : "${m}",
-                    },
-                }`);
+                    body.blocks.push({
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": `${m}`,
+                        },
+                    });
                 });
 
                 const result = await axios.post('https://slack.com/api/chat.postMessage', body, {
