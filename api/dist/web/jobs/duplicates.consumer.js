@@ -69,7 +69,7 @@ let DuplicatesConsumer = DuplicatesConsumer_1 = class DuplicatesConsumer {
                 };
                 await this.notificationService.send(notification);
                 this.logger.debug('Sending email');
-                const reportUrl = `${process.env.INTERAMPLIFY_APP_URL}/job/report-intern/${report.id}`;
+                const reportUrl = `${process.env.INTERAMPLIFY_APP_URL}job/report-intern/${report.id}`;
                 const mailOptions = {
                     template: "duplicates",
                     file_url: reportUrl,
